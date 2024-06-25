@@ -25,6 +25,7 @@
           <a class="nav-link" routerLink="/Onama">O nama</a>
         </li>
       </ul>
+
       <ul class="nav navbar-nav navbar-right" id="UserNavMenu">
         <li class="nav-item me-3 me-lg-0 dropdown">
           <a
@@ -34,27 +35,105 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            <mat-icon
-              aria-hidden="false"
-              aria-label="Example home icon"
-              fontIcon="account_circle"
-            ></mat-icon>
-            Login
+            @if (!_globalUserState.currentUser()) {
+              <mat-icon
+                aria-hidden="false"
+                aria-label="Example home icon"
+                fontIcon="account_circle"
+              ></mat-icon>
+              Login
+            } @else {
+              <mat-icon
+                aria-hidden="false"
+                aria-label="Example home icon"
+                fontIcon="account_circle"
+                matBadge="{{ _globalUserState.notificationNumberTotal() }}"
+                [matBadgeHidden]="
+                  _globalUserState.notificationNumberTotal() === 0
+                "
+              ></mat-icon>
+              <ng-container>
+                {{ _globalUserState.currentUser()?.name }}
+                {{ _globalUserState.currentUser()?.lastname }}
+              </ng-container>
+            }
           </a>
 
           <ul class="dropdown-menu dropdown-menu-lg-end">
-            <li>
-              <a
-                class="dropdown-item d-flex align-items-center justify-content-center"
-                routerLink="/auth/login"
-                ><mat-icon
-                  aria-hidden="false"
-                  aria-label="Example home icon"
-                  fontIcon="login"
-                ></mat-icon
-                >Login</a
-              >
-            </li>
+            @if (!_globalUserState.currentUser()) {
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center justify-content-center"
+                  routerLink="/auth/login"
+                  ><mat-icon
+                    aria-hidden="false"
+                    aria-label="Example home icon"
+                    fontIcon="login"
+                  ></mat-icon
+                  >Login</a
+                >
+              </li>
+            } @else {
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center justify-content-center"
+                  routerLink="/auth/login"
+                  ><mat-icon
+                    aria-hidden="false"
+                    aria-label="Example home icon"
+                    fontIcon="manage_accounts"
+                  ></mat-icon
+                  >Account</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center justify-content-center"
+                  routerLink="/auth/login"
+                  ><mat-icon
+                    aria-hidden="false"
+                    aria-label="Example home icon"
+                    fontIcon="forum"
+                    matBadge="{{
+                      _globalUserState.notificationNumberMessages()
+                    }}"
+                    [matBadgeHidden]="
+                      _globalUserState.notificationNumberMessages() === 0
+                    "
+                  ></mat-icon
+                  >Messages</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center justify-content-center"
+                  routerLink="/auth/login"
+                  ><mat-icon
+                    aria-hidden="false"
+                    aria-label="Example home icon"
+                    fontIcon="notifications"
+                    matBadge="{{ _globalUserState.notificationNumberBasic() }}"
+                    [matBadgeHidden]="
+                      _globalUserState.notificationNumberBasic() === 0
+                    "
+                  ></mat-icon
+                  >Notifications</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item d-flex align-items-center justify-content-center"
+                  (click)="logout()"
+                  id="LogoutButton"
+                  ><mat-icon
+                    aria-hidden="false"
+                    aria-label="Example home icon"
+                    fontIcon="logout"
+                  ></mat-icon
+                  >Logout</a
+                >
+              </li>
+            }
           </ul>
         </li>
       </ul>

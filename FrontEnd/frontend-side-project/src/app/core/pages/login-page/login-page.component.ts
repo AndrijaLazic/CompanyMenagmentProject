@@ -13,6 +13,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { GlobalUserStateService } from '../../../shared/services/global-user-state.service';
+import { User } from '../../../shared/models/User';
+import { AuthService } from '../../../shared/services/auth.service';
 @Component({
   selector: 'app-login-page',
   standalone: true,
@@ -30,15 +33,21 @@ import { MatIconModule } from '@angular/material/icon';
 export class LoginPageComponent {
   loginForm!: FormGroup;
   matcher = new MyErrorStateMatcher();
+
+  constructor(
+    private _globalUserState: GlobalUserStateService,
+    private _authService: AuthService,
+  ) {}
+
   ngOnInit() {
     this.loginForm = new FormGroup({
-      email: new FormControl('', [
+      Email: new FormControl('', [
         Validators.required,
         Validators.email,
         Validators.minLength(6),
         Validators.maxLength(100),
       ]),
-      password: new FormControl('', [
+      Password: new FormControl('', [
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(20),
@@ -47,7 +56,7 @@ export class LoginPageComponent {
   }
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
+      this._authService.login(this.loginForm.value);
     }
   }
 }

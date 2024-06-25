@@ -77,6 +77,15 @@
         color: var(--text-color-1);
         text-align: center;
       }
+      a.dropdown-item{
+        margin-bottom: 10px;
+      }
+      #LogoutButton{
+        margin-bottom: 0px;
+        margin-top: 20px;
+        border-top: 2px solid white;
+        border-bottom: 2px solid white;
+      }
     }
     .dropdown-toggle{
       text-decoration: none;

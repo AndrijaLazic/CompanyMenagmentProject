@@ -8,15 +8,15 @@
           type="text"
           matInput
           id="email"
-          formControlName="email"
+          formControlName="Email"
           [errorStateMatcher]="matcher"
           placeholder="example@gmail.com"
         />
 
-        @if (loginForm.get("email")?.errors?.["required"]) {
+        @if (loginForm.get("Email")?.errors?.["required"]) {
           <mat-error>Email is <strong>required</strong></mat-error>
         } @else if (
-          loginForm.get("email")?.invalid && loginForm.get("email")?.touched
+          loginForm.get("Email")?.invalid && loginForm.get("Email")?.touched
         ) {
           <mat-error>Please enter a valid email</mat-error>
         }
@@ -28,16 +28,16 @@
         <input
           type="password"
           matInput
-          formControlName="password"
+          formControlName="Password"
           [errorStateMatcher]="matcher"
           placeholder="*******"
         />
 
-        @if (loginForm.get("password")?.errors?.["required"]) {
+        @if (loginForm.get("Password")?.errors?.["required"]) {
           <mat-error>Email is <strong>required</strong></mat-error>
         } @else if (
-          loginForm.get("password")?.invalid &&
-          loginForm.get("password")?.touched
+          loginForm.get("Password")?.invalid &&
+          loginForm.get("Password")?.touched
         ) {
           <mat-error>Please enter a valid password</mat-error>
         }

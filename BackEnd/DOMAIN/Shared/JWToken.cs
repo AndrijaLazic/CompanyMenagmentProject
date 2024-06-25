@@ -15,7 +15,8 @@ namespace DOMAIN.Shared
                 new Claim("phoneNumber",user.PhoneNumber),
                 new Claim("email",user.Email),
                 new Claim("name",user.Name),
-                new Claim("id",user.Name),
+                new Claim("id",user.Id.ToString()),
+                new Claim("lastname",user.Lastname),
                 new Claim("workerType",user.WorkerType.ToString())
             };
 
