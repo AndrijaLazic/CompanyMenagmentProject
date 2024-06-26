@@ -2,6 +2,8 @@ import { computed, Injectable, Signal, signal } from '@angular/core';
 import { User } from '../models/User';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
+import { TokensDTR } from '../models/DTR/TokensDTR';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,13 +15,47 @@ export class GlobalUserStateService {
   notificationNumberTotal: Signal<number> = computed(
     () => this.notificationNumberMessages() + this.notificationNumberBasic(),
   );
-  constructor(private cookieService: CookieService) {
-    if (cookieService.check('UserJWT')) {
-      const helper = new JwtHelperService();
-      if (helper.isTokenExpired(cookieService.get('UserJWT'))) {
-        cookieService.delete('UserJWT');
+  constructor(
+    private cookieService: CookieService,
+    private authService: AuthService,
+  ) {
+    this.checkJWT();
+  }
+
+  checkJWT() {
+    const jwt = sessionStorage.getItem('UserJWT');
+    const helper = new JwtHelperService();
+
+    if (jwt) {
+      if (!helper.isTokenExpired(jwt)) {
+        this.loginUser({
+          jwt: jwt,
+          resetToken: this.cookieService.get('ResetToken'),
+        });
+        return;
+      }
+    }
+
+    if (this.cookieService.check('ResetToken')) {
+      if (helper.isTokenExpired(this.cookieService.get('ResetToken'))) {
+        this.logout();
       } else {
-        this.loginUser(cookieService.get('UserJWT'));
+        const tokens: TokensDTR = {
+          jwt: '',
+          resetToken: this.cookieService.get('ResetToken'),
+        };
+
+        this.authService.resetJWT(tokens).subscribe({
+          next: (resData: any) => {
+            this.loginUser({
+              jwt: resData.data,
+              resetToken: this.cookieService.get('ResetToken'),
+            });
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
       }
     }
   }
@@ -28,13 +64,18 @@ export class GlobalUserStateService {
     if (this.currentUser()) {
       this.currentUser.set(null);
     }
+
+    this.cookieService.delete('ResetToken');
+
+    sessionStorage.removeItem('UserJWT');
   }
 
-  loginUser(JWT: string) {
+  loginUser(tokens: TokensDTR) {
+    this.logout();
     const helper = new JwtHelperService();
-    const decodedToken = helper.decodeToken(JWT);
+    const decodedToken = helper.decodeToken(tokens.jwt);
     this.currentUser.set({
-      jwt: JWT,
+      jwt: tokens.jwt,
       email: decodedToken.email,
       id: decodedToken.id,
       phoneNumber: decodedToken.phoneNumber,
@@ -42,6 +83,7 @@ export class GlobalUserStateService {
       name: decodedToken.name,
       workerType: decodedToken.workerType,
     });
-    this.cookieService.set('UserJWT', JWT);
+    sessionStorage.setItem('UserJWT', tokens.jwt);
+    this.cookieService.set('ResetToken', tokens.resetToken, 10, '/');
   }
 }

@@ -14,8 +14,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { GlobalUserStateService } from '../../../shared/services/global-user-state.service';
-import { User } from '../../../shared/models/User';
 import { AuthService } from '../../../shared/services/auth.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login-page',
   standalone: true,
@@ -37,17 +37,18 @@ export class LoginPageComponent {
   constructor(
     private _globalUserState: GlobalUserStateService,
     private _authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
     this.loginForm = new FormGroup({
-      Email: new FormControl('', [
+      Email: new FormControl('andrija@gmail.com', [
         Validators.required,
         Validators.email,
         Validators.minLength(6),
         Validators.maxLength(100),
       ]),
-      Password: new FormControl('', [
+      Password: new FormControl('string', [
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(20),
@@ -56,7 +57,15 @@ export class LoginPageComponent {
   }
   onSubmit() {
     if (this.loginForm.valid) {
-      this._authService.login(this.loginForm.value);
+      this._authService.login(this.loginForm.value).subscribe({
+        next: (resData: any) => {
+          this._globalUserState.loginUser(resData.data);
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
     }
   }
 }
