@@ -1,5 +1,7 @@
-﻿using DAL;
+﻿using Azure;
+using DAL;
 using DOMAIN.Abstractions;
+using DOMAIN.Exceptions.Server;
 using DOMAIN.Models.Database;
 using DOMAIN.Models.DTO;
 using DOMAIN.Models.DTR;
@@ -53,10 +55,9 @@ namespace BLL.Services
             return response;
         }
 
-        public async Task<ServiceResponse<string>> Login(LoginDTO loginDTO)
+        public async Task<ServiceResponse<TokensDTR>> Login(LoginDTO loginDTO)
         {
-            ServiceResponse<string> response = new ServiceResponse<string>();
-
+            
             PasswordLogic.CreatePasswordHash(loginDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             User user = _userDataDB.GetUser(loginDTO.Email);
@@ -66,7 +67,10 @@ namespace BLL.Services
                 throw new Exception("BadPassword");
             }
 
-            response.Data = JWToken.CreateToken(user, _options.JWTSettings);
+            ServiceResponse<TokensDTR> response = new ServiceResponse<TokensDTR>();
+            response.Data = new TokensDTR();
+            response.Data.JWT = JWToken.CreateToken(user, _options.JWTSettings);
+            response.Data.ResetToken = JWToken.CreateRefreshToken(user, _options.ResetTokenSettings);
 
             return response;
         }
@@ -74,6 +78,20 @@ namespace BLL.Services
         public void RemoveUser(int id)
         {
             _userDataDB.RemoveUser(id);
+        }
+
+        public string ResetJWT(string resetToken)
+        {
+            string? id = JWToken.ValidateRefreshToken(resetToken, _options.ResetTokenSettings);
+            if (id == null)
+            {
+                throw new BaseServerException("ResetTokenNotValid");
+            }
+
+            User user = _userDataDB.GetUser(int.Parse(id));
+
+            return JWToken.CreateToken(user, _options.JWTSettings);
+
         }
     }
 }

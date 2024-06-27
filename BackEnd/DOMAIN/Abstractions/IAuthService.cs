@@ -11,8 +11,9 @@ namespace DOMAIN.Abstractions
     public interface IAuthService
     {
         Task<ServiceResponse<bool>> RegisterUser(RegistrationDTO registrationDTO);
-        Task<ServiceResponse<string>> Login(LoginDTO loginDTO);
+        Task<ServiceResponse<TokensDTR>> Login(LoginDTO loginDTO);
         void RemoveUser(int id);
+        string ResetJWT(string resetToken);
 
     }
 }

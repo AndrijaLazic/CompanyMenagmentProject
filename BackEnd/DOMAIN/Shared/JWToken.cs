@@ -67,5 +67,60 @@ namespace DOMAIN.Shared
             }
 
         }
+
+        public static string CreateRefreshToken(User user, ResetTokenSettings settings)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim("id",user.Id.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SECRET_KEY));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(double.Parse(settings.DURRATION)),
+                signingCredentials: creds,
+                issuer: settings.ISSUER
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
+
+        public static string? ValidateRefreshToken(string token, ResetTokenSettings jWTSettings)
+        {
+            if (token == null)
+                return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(jWTSettings.SECRET_KEY);
+
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+
+                    ClockSkew = TimeSpan.Zero
+                },
+                out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+
+                var Id = jwtToken.Claims.First(x => x.Type == "id").Value;
+
+                return Id;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
     }
 }

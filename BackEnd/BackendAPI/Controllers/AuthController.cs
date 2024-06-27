@@ -44,9 +44,9 @@ namespace BackendAPI.Controllers
         [HttpPost("Login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        public async Task<ActionResult<string>> Login(LoginDTO dto)
+        public async Task<ActionResult<TokensDTR>> Login(LoginDTO dto)
         {
-            ServiceResponse<string> response = new ServiceResponse<string>();
+            ServiceResponse<TokensDTR> response = new ServiceResponse<TokensDTR>();
           
             response = await _authService.Login(dto);
             
@@ -69,6 +69,18 @@ namespace BackendAPI.Controllers
             return Ok(response);
         }
 
+        [HttpPost("ResetJWT")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<bool>> ResetJWT(TokensDTR tokens)
+        {
+            ServiceResponse<string> response = new ServiceResponse<string>();
+
+            response.Data = _authService.ResetJWT(tokens.ResetToken);
+
+            return Ok(response);
+        }
 
     }
 }

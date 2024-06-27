@@ -99,6 +99,12 @@ namespace DAL
             _databaseContext.SaveChanges();
         }
 
-
+        public User GetUser(int id)
+        {
+            User? user = _databaseContext.Users.Where(x => x.Id == id).FirstOrDefault();
+            if (user == null)
+                throw new UserNotFound("NoUserWithId");
+            return user;
+        }
     }
 }

@@ -6,6 +6,7 @@ using DOMAIN.Exceptions.SQL;
 using System;
 using DOMAIN.Models.DTR;
 using Serilog.Core;
+using DOMAIN.Exceptions.Server;
 
 namespace BackendAPI.Middlewares
 {
@@ -30,6 +31,10 @@ namespace BackendAPI.Middlewares
             {
                 await HandleSqlExceptionAsync(context, ex);
             }
+            catch(BaseServerException ex)
+            {
+                await HandleServerExceptionAsync(context, ex);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
@@ -47,6 +52,15 @@ namespace BackendAPI.Middlewares
         private async Task HandleSqlExceptionAsync(HttpContext context, BaseSqlException exception)
         {
             context.Response.StatusCode = 400;
+            ServiceResponse<string> serviceResponse = new ServiceResponse<string>();
+            serviceResponse.Success = false;
+            serviceResponse.Message = exception.Message;
+            await context.Response.WriteAsJsonAsync(serviceResponse);
+        }
+
+        private async Task HandleServerExceptionAsync(HttpContext context, BaseServerException exception)
+        {
+            context.Response.StatusCode = 403;
             ServiceResponse<string> serviceResponse = new ServiceResponse<string>();
             serviceResponse.Success = false;
             serviceResponse.Message = exception.Message;

@@ -17,10 +17,17 @@ namespace DOMAIN.Shared
         public string JWT_DURRATION { get; set; }
         public string ISSUER {  get; set; }
     }
+    public class ResetTokenSettings
+    {
+        public string SECRET_KEY { get; set; }
+        public string DURRATION { get; set; }
+        public string ISSUER { get; set; }
+    }
     public class AppConfigClass
     {
         public string AllowedHosts { get; set; }
         public Database Database { get; set; }
         public JWTSettings JWTSettings { get; set; }
+        public ResetTokenSettings ResetTokenSettings { get; set; }
     }
 }

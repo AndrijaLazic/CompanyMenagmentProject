@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\Server\" />
     <Folder Include="Models\Database\" />
   </ItemGroup>
 

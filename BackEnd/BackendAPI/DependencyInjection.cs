@@ -32,7 +32,7 @@ namespace BackendAPI
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = configuration["MyAppSettings:JWTSettings:ISSUER"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["MyAppSettings:JWTSettings:SECRET_KEY"])),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["MyAppSettings:JWTSettings:SECRET_KEY"]!)),
                     ValidateIssuer = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
