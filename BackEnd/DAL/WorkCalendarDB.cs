@@ -1,6 +1,8 @@
 ﻿using DOMAIN.Exceptions.SQL;
 using DOMAIN.Models.Database;
 using DOMAIN.Models.DTO;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +46,30 @@ namespace DAL
                 _databaseContext.WorkCalendars.Remove(workCalendar);
             }
             _databaseContext.SaveChanges();
+        }
+
+
+        public List<WorkCalendar> GetWorkCalendarForUser(int userId, DateOnly date)
+        {
+
+            SqlParameter[] parms =
+            [
+                // Create parameter(s)    
+                new SqlParameter { ParameterName = "@Id", Value = userId },
+                new SqlParameter { ParameterName = "@Date", Value = date.ToString("yyyy/MM/dd") }
+            ];
+
+            Console.WriteLine(date.ToString("yyyy/MM/dd"));
+            string sql = $"EXEC spGetUsersShifts @Id, @Date";
+
+            List<WorkCalendar> workCalendars = null;
+
+            var res = _databaseContext.WorkCalendars.FromSqlRaw(sql, parms);
+
+            workCalendars = res.ToList();
+
+            
+            return workCalendars;
         }
     }
 }

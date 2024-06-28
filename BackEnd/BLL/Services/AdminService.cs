@@ -14,13 +14,11 @@ namespace BLL.Services
     public class AdminService
     {
         private readonly AppConfigClass _options;
-        private IUserDataDB _userDataDB;
         private WorkCalendarDB _workCalendarDB;
 
         public AdminService(IOptions<AppConfigClass> options, IUserDataDB userDataDB, WorkCalendarDB workCalendarDB)
         {
             _options = options.Value;
-            _userDataDB = userDataDB;
             _workCalendarDB = workCalendarDB;
         }
 

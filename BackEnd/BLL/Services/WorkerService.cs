@@ -1,0 +1,37 @@
+﻿using DAL;
+using DOMAIN.Abstractions;
+using DOMAIN.Models.Database;
+using DOMAIN.Models.DTO;
+using DOMAIN.Shared;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BLL.Services
+{
+    public class WorkerService
+    {
+        private readonly AppConfigClass _options;
+        private WorkCalendarDB _workCalendarDB;
+
+        public WorkerService(IOptions<AppConfigClass> options, WorkCalendarDB workCalendarDB)
+        {
+            _options = options.Value;
+            _workCalendarDB = workCalendarDB;
+        }
+
+        public async Task<List<WorkCalendar>> GetWorkCalendarForUser(string userToken, DateOnly date)
+        {
+            string userId = JWToken.ValidateToken(userToken,_options.JWTSettings);
+            if(userId == null)
+            {
+                throw new Exception("BadJWToken");
+            }
+
+            return _workCalendarDB.GetWorkCalendarForUser(int.Parse(userId), date);
+        }
+    }
+}

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 namespace BackendAPI.Controllers
 {
     [Route("[controller]")]
-    
+    [Authorize(Policy = "UserIsAdmin")]
     [ApiController]
     public class AdminController : ControllerBase
     {

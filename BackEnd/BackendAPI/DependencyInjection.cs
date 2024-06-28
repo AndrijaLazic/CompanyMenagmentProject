@@ -54,6 +54,7 @@ namespace BackendAPI
             services.AddScoped<WorkCalendarDB, WorkCalendarDB>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<AdminService, AdminService>();
+            services.AddScoped<WorkerService, WorkerService>();
 
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
