@@ -11,5 +11,7 @@ public partial class WorkCalendar
 
     public int UserId { get; set; }
 
+    public virtual ShiftType ShiftNavigation { get; set; } = null!;
+
     public virtual User User { get; set; } = null!;
 }

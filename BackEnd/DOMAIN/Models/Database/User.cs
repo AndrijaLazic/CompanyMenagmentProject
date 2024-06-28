@@ -21,5 +21,7 @@ public partial class User
 
     public byte WorkerType { get; set; }
 
+    public virtual ICollection<WorkCalendar> WorkCalendars { get; set; } = new List<WorkCalendar>();
+
     public virtual WorkerType WorkerTypeNavigation { get; set; } = null!;
 }

@@ -51,7 +51,9 @@ namespace BackendAPI
             // Add services to the container.
 
             services.AddScoped<IUserDataDB,UserDataDB>();
+            services.AddScoped<WorkCalendarDB, WorkCalendarDB>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<AdminService, AdminService>();
 
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -15,6 +15,8 @@ public partial class CompanyMenagmentProjectContext : DbContext
     {
     }
 
+    public virtual DbSet<ShiftType> ShiftTypes { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<WorkCalendar> WorkCalendars { get; set; }
@@ -27,6 +29,20 @@ public partial class CompanyMenagmentProjectContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ShiftType>(entity =>
+        {
+            entity.HasKey(e => e.ShiftNumber);
+
+            entity.Property(e => e.EndTime)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.StartTime)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .IsFixedLength();
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasIndex(e => e.Email, "UQ_Email").IsUnique();
@@ -46,11 +62,16 @@ public partial class CompanyMenagmentProjectContext : DbContext
 
         modelBuilder.Entity<WorkCalendar>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("WorkCalendar");
+            entity.HasKey(e => new { e.Date, e.Shift, e.UserId });
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.ToTable("WorkCalendar");
+
+            entity.HasOne(d => d.ShiftNavigation).WithMany(p => p.WorkCalendars)
+                .HasForeignKey(d => d.Shift)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WorkCalendar_ShiftTypes");
+
+            entity.HasOne(d => d.User).WithMany(p => p.WorkCalendars)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_WorkCalendar_Users");

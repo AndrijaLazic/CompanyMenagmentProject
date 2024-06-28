@@ -4,6 +4,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 import { TokensDTR } from '../models/DTR/TokensDTR';
 import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class GlobalUserStateService {
   constructor(
     private cookieService: CookieService,
     private authService: AuthService,
+    private router: Router,
   ) {
     this.checkJWT();
   }
@@ -54,6 +56,7 @@ export class GlobalUserStateService {
           },
           error: (err) => {
             console.log(err);
+            this.router.navigate(['/']);
           },
         });
       }

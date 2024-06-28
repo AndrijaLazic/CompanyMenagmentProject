@@ -16,9 +16,11 @@ sqlcmd -S %SERVER% -i %MAIN_SCRIPT_PATH%
 set tableNames[0]=dbo.Users.Table.sql
 set tableNames[1]=dbo.WorkCalendar.Table.sql
 set tableNames[2]=dbo.WorkerTypes.Table.sql
-set tableNames[3]=TestDataReset.sql
+set tableNames[3]=ShiftTypes.sql
+set tableNames[4]=CreateCONSTRAINTS.sql
 
-FOR /L %%f IN (0,1,3) DO (
+
+FOR /L %%f IN (0,1,4) DO (
 	call ECHO Running %%tableNames[%%f]%% ...
 	
 	call sqlcmd -S %SERVER% -d %DATABASE% -i %%tableNames[%%f]%%
@@ -30,14 +32,20 @@ FOR /L %%f IN (0,1,3) DO (
 	)
 )
 
-sqlcmd -S %SERVER% -i "CreateCONSTRAINTS.sql"
-
-
-echo;
-echo;
-echo;
-
 echo "Starting to rebuild procedures"
 CALL  StoredProcedures/RebuildProcedures.bat
+
+echo;
+echo;
+echo;
+echo "Starting to add test data"
+cd ..
+sqlcmd -S %SERVER% -d %DATABASE% -i TestDataReset.sql
+
+
+
+
+
+
 
 pause

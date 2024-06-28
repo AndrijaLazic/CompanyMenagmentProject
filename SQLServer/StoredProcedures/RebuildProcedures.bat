@@ -13,8 +13,9 @@ sqlcmd -S %SERVER% -i %MAIN_SCRIPT_PATH%
 
 
 set tableNames[0]=UsersTableProcedures.sql
+set tableNames[1]=WorkCalendarProcedures.sql
 
-FOR /L %%f IN (0,1,0) DO (
+FOR /L %%f IN (0,1,1) DO (
 	call ECHO Running %%tableNames[%%f]%% ...
 	
 	call sqlcmd -S %SERVER% -d %DATABASE% -i %%tableNames[%%f]%%
@@ -26,5 +27,3 @@ FOR /L %%f IN (0,1,0) DO (
 	)
 	
 )
-
-pause

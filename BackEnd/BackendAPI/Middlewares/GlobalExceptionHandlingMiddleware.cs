@@ -7,6 +7,7 @@ using System;
 using DOMAIN.Models.DTR;
 using Serilog.Core;
 using DOMAIN.Exceptions.Server;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BackendAPI.Middlewares
 {
@@ -26,6 +27,10 @@ namespace BackendAPI.Middlewares
             try
             {
                 await _next(context);
+            }
+            catch (SecurityTokenValidationException ex)
+            {
+                await HandleTokenExceptionAsync(context, ex);
             }
             catch (BaseSqlException ex)
             {
@@ -64,6 +69,23 @@ namespace BackendAPI.Middlewares
             ServiceResponse<string> serviceResponse = new ServiceResponse<string>();
             serviceResponse.Success = false;
             serviceResponse.Message = exception.Message;
+            await context.Response.WriteAsJsonAsync(serviceResponse);
+        }
+
+        private async Task HandleTokenExceptionAsync(HttpContext context, SecurityTokenValidationException exception)
+        {
+            ServiceResponse<string> serviceResponse = new ServiceResponse<string>();
+            serviceResponse.Success = false;
+            context.Response.StatusCode = 401;
+            if (exception is SecurityTokenExpiredException)
+            {
+                serviceResponse.Message = "TokenExpired";
+            }
+            else
+            {
+                serviceResponse.Message = "TokenNotValid";
+            }
+
             await context.Response.WriteAsJsonAsync(serviceResponse);
         }
     }

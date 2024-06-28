@@ -97,29 +97,24 @@ namespace DOMAIN.Shared
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(jWTSettings.SECRET_KEY);
 
-            try
+            
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
 
-                    ClockSkew = TimeSpan.Zero
-                },
-                out SecurityToken validatedToken);
+                ClockSkew = TimeSpan.Zero
+            },
+            out SecurityToken validatedToken);
 
-                var jwtToken = (JwtSecurityToken)validatedToken;
+            var jwtToken = (JwtSecurityToken)validatedToken;
 
-                var Id = jwtToken.Claims.First(x => x.Type == "id").Value;
+            var Id = jwtToken.Claims.First(x => x.Type == "id").Value;
 
-                return Id;
-            }
-            catch
-            {
-                return null;
-            }
+            return Id;
+
 
         }
     }
