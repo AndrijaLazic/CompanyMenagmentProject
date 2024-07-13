@@ -1,6 +1,13 @@
+using BackendAPI;
+using DOMAIN.Shared;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//extension method
+builder.Host.ConfigureAppSettings();
+
+var appConfig = builder.Configuration.Get<AppConfigClass>();
+Console.WriteLine(appConfig.Database.ConnectionString);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -17,6 +24,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("_myAllowSpecificOrigins");
 
 app.UseAuthorization();
 
