@@ -22,10 +22,16 @@ namespace DOMAIN.Shared
         public string MicrosoftAspNetCore { get; set; }
     }
 
+    public class JWTSettings
+    {
+        public string SECRET_KEY { get; set; }
+        public string JWT_DURRATION { get; set; }
+    }
     public class AppConfigClass
     {
         public Logging Logging { get; set; }
         public string AllowedHosts { get; set; }
         public Database Database { get; set; }
+        public JWTSettings JWTSettings { get; set; }
     }
 }

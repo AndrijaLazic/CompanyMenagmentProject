@@ -1,4 +1,5 @@
 ﻿using BLL.Services;
+using DAL;
 using DOMAIN.Abstractions;
 using DOMAIN.Models.Database;
 using DOMAIN.Shared;
@@ -11,10 +12,17 @@ namespace BackendAPI
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var appConfig = configuration.Get<AppConfigClass>();
+            services.Configure<AppConfigClass>(configuration.GetSection("MyAppSettings"));
+            var appConfig = configuration.GetSection("MyAppSettings").Get<AppConfigClass>();
+
+            services.AddDbContext<CompanyMenagmentProjectContext>(
+                options => options.UseSqlServer(appConfig.Database.ConnectionString));
 
 
             // Add services to the container.
+
+            services.AddScoped<IUserDataDB,UserDataDB>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -31,11 +39,7 @@ namespace BackendAPI
                             .AllowAnyHeader();
                     });
             });
-
-
-
-            services.AddDbContext<CompanyMenagmentProjectContext>(
-                options => options.UseSqlServer(appConfig.Database.ConnectionString));
+   
 
             return services;
         }

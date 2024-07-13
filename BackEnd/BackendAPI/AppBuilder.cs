@@ -11,7 +11,6 @@
                 builder.AddJsonFile($"appsettings.json", false, true);
                 builder.AddJsonFile($"appsettings.{enviroment}.json", true, true);
                 builder.AddEnvironmentVariables();
-
             });
 
             return hostBuilder;
