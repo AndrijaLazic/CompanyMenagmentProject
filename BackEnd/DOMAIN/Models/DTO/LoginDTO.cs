@@ -11,7 +11,7 @@ namespace DOMAIN.Models.DTO
     {
         [Required(ErrorMessage = "EmailRequired")]
         [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "EmailNotValid")]
-        [StringLength(maximumLength: 30, ErrorMessage = "MaxEmail30")]
+        [StringLength(maximumLength: 100, ErrorMessage = "MaxEmail30")]
         public string Email { get; init; }
 
         [Required(ErrorMessage = "PasswordRequired")]

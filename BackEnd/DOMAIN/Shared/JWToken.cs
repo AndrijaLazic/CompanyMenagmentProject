@@ -18,8 +18,7 @@ namespace DOMAIN.Shared
                 new Claim("id",user.Name)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                Environment.GetEnvironmentVariable("SECRET_KEY")!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTSettings.SECRET_KEY));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
             var token = new JwtSecurityToken(

@@ -10,5 +10,6 @@ namespace DOMAIN.Abstractions
     public interface IUserDataDB
     {
         public int InsertNewUser(User user);
+        public User GetUser(string mail);
     }
 }

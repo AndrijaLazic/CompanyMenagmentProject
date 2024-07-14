@@ -66,6 +66,46 @@ namespace DAL
             return res;
         }
 
+        public User GetUser(string mail)
+        {
+            SqlParameter[] parms =
+            [
+                // Create parameter(s)    
+                new SqlParameter { ParameterName = "@Email", Value = mail }
+            ];
+
+            string sql = $"EXEC spGetUserWithEmail @Email";
+
+            User? user = null;
+
+            try
+            {
+                user = _databaseContext.Users.FromSqlRaw(sql, parms).AsEnumerable().First();
+            }
+            catch (Exception ex)
+            {
+                /*switch (ex.Number)
+                {
+                    //constraint error
+                    case 2627:
+                        switch (ex.Message)
+                        {
+                            case String message when (message.Contains("UQ_PhoneNumber")):
+                                throw new Exception("PhoneNumberTaken");
+                            case String message when (message.Contains("UQ_Email")):
+                                throw new Exception("EmailAlreadyTaken");
+                            default:
+                                throw;
+                        }
+                    default:
+                        throw;
+                }*/
+                Console.WriteLine(ex);
+            }
+
+            return user;
+        }
+
 
     }
 }

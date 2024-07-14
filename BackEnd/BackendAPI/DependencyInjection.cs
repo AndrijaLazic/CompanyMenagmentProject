@@ -18,6 +18,7 @@ namespace BackendAPI
             services.AddDbContext<CompanyMenagmentProjectContext>(
                 options => options.UseSqlServer(appConfig.Database.ConnectionString));
 
+            
 
             // Add services to the container.
 

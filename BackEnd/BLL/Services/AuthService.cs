@@ -54,7 +54,20 @@ namespace BLL.Services
 
         public async Task<ServiceResponse<string>> Login(LoginDTO loginDTO)
         {
-            throw new NotImplementedException();
+            ServiceResponse<string> response = new ServiceResponse<string>();
+
+            PasswordLogic.CreatePasswordHash(loginDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            User user = _userDataDB.GetUser(loginDTO.Email);
+
+            if (!PasswordLogic.VerifyPasswordHash(loginDTO.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                throw new Exception("BadPassword");
+            }
+
+            response.Data = JWToken.CreateToken(user, _options.JWTSettings);
+
+            return response;
         }
     }
 }
