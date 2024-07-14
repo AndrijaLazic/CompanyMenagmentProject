@@ -39,10 +39,17 @@ END
 Go
 
 
-CREATE PROCEDURE spSelectAllUsers
+-- =============================================
+-- Author:		Andrija Lazic
+-- Create date: 13.07.2024
+-- Description:	Get user with mail
+-- =============================================
+CREATE PROCEDURE spGetUserWithEmail
+	@Email [nvarchar](100)
 AS
 BEGIN
-	SELECT *
+	SELECT TOP(1) *
     FROM [dbo].[Users]
+	where Email=@Email
 END
 GO

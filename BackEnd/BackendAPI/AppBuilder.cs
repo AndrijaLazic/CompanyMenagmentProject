@@ -4,7 +4,7 @@
     {
         public static IHostBuilder ConfigureAppSettings(this IHostBuilder hostBuilder)
         {
-            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIROMENT");
+            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
             hostBuilder.ConfigureAppConfiguration((ctx, builder) =>
             {
