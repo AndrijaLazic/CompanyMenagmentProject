@@ -1,4 +1,5 @@
 ﻿using DOMAIN.Abstractions;
+using DOMAIN.Exceptions.SQL;
 using DOMAIN.Models.Database;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -49,9 +50,9 @@ namespace DAL
                         switch (ex.Message)
                         {
                             case String message when (message.Contains("UQ_PhoneNumber")):
-                                throw new Exception("PhoneNumberTaken");
+                                throw new DataBaseDuplicateException("PhoneNumberTaken");
                             case String message when (message.Contains("UQ_Email")):
-                                throw new Exception("EmailAlreadyTaken");
+                                throw new DataBaseDuplicateException("EmailAlreadyTaken");
                             default:
                                 throw;
                         }  
@@ -60,8 +61,6 @@ namespace DAL
                 }
             }
 
-            if (res == 0)
-                throw new Exception("InsertNewUserError");
 
             return res;
         }
@@ -82,25 +81,10 @@ namespace DAL
             {
                 user = _databaseContext.Users.FromSqlRaw(sql, parms).AsEnumerable().First();
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                /*switch (ex.Number)
-                {
-                    //constraint error
-                    case 2627:
-                        switch (ex.Message)
-                        {
-                            case String message when (message.Contains("UQ_PhoneNumber")):
-                                throw new Exception("PhoneNumberTaken");
-                            case String message when (message.Contains("UQ_Email")):
-                                throw new Exception("EmailAlreadyTaken");
-                            default:
-                                throw;
-                        }
-                    default:
-                        throw;
-                }*/
-                Console.WriteLine(ex);
+                if (ex.Message.Contains("Sequence contains no elements"))
+                    throw new UserNotFound("NoUserWithThatEmail");
             }
 
             return user;

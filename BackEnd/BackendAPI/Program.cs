@@ -1,4 +1,5 @@
 using BackendAPI;
+using BackendAPI.Middlewares;
 using DOMAIN.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,9 @@ app.UseHttpsRedirection();
 app.UseCors("_myAllowSpecificOrigins");
 
 app.UseAuthorization();
+
+//middlewares
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
 

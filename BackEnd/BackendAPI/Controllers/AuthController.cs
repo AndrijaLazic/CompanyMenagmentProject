@@ -30,16 +30,9 @@ namespace BackendAPI.Controllers
         public async Task<ActionResult<bool>> Register(RegistrationDTO dto)
         {
             ServiceResponse<bool> response = new ServiceResponse<bool>();
-            try
-            {
-                response = await _authService.RegisterUser(dto);
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = ex.Message;
-                return BadRequest(response);
-            }
+            
+            response = await _authService.RegisterUser(dto);
+            
             return Ok(response);
         }
 
@@ -49,16 +42,9 @@ namespace BackendAPI.Controllers
         public async Task<ActionResult<string>> Login(LoginDTO dto)
         {
             ServiceResponse<string> response = new ServiceResponse<string>();
-            try
-            {
-                response = await _authService.Login(dto);
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = ex.Message;
-                return BadRequest(response);
-            }
+          
+            response = await _authService.Login(dto);
+            
             return Ok(response);
         }
 
