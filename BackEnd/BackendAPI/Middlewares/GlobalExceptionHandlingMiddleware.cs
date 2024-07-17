@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using DOMAIN.Exceptions.SQL;
 using System;
 using DOMAIN.Models.DTR;
+using Serilog.Core;
 
 namespace BackendAPI.Middlewares
 {
@@ -39,6 +40,7 @@ namespace BackendAPI.Middlewares
                 serviceResponse.Message = "ServerSideError";
 
                 await context.Response.WriteAsJsonAsync(serviceResponse);
+                _logger.LogError(ex.Message);
             }
         }
 

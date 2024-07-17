@@ -2,6 +2,9 @@
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Configuration;
+using CsvHelper.Configuration;
+using CsvHelper;
+using System.Globalization;
 
 namespace BackendAPI.Serilog
 {
@@ -18,14 +21,54 @@ namespace BackendAPI.Serilog
             this.path = path;
             this.rollingInterval = rollingInterval;
             this.level = restrictedToMinimumLevel;
+            Directory.CreateDirectory(path);
         }
 
         public void Emit(LogEvent logEvent)
         {
             if (LogEventLevel.Error < logEvent.Level)
                 return;
-            var message = logEvent.RenderMessage(_formatProvider);
-            Console.WriteLine(DateTimeOffset.Now.ToString() + path + message);
+
+            string currentDate = DateTime.Now.ToString("dd/MM/yyyy");
+            string filePath= Path.Combine(path, currentDate + ".csv");
+
+            var dataToWrite = new List<LogFileStruct>
+            {
+                new LogFileStruct()
+                {
+                    Message = logEvent.RenderMessage(_formatProvider),
+                    Time = DateTimeOffset.Now.ToString(),
+                    LogLevel = logEvent.Level
+                }
+            };
+
+
+            //Append to existing file
+            if (File.Exists(filePath))
+            {
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    // Don't write the header again.
+                    HasHeaderRecord = false,
+                };
+
+                using (var stream = File.Open(filePath, FileMode.Append))
+                using (var writer = new StreamWriter(stream))
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    csv.WriteRecords(
+                        dataToWrite
+                    );
+                }
+                return;
+            }
+
+            using (var stream = File.Open(filePath, FileMode.Append))
+            using (var writer = new StreamWriter(stream))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecords(dataToWrite);
+            }
         }
     }
 
