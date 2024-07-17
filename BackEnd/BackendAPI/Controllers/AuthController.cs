@@ -5,6 +5,7 @@ using DOMAIN.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace BackendAPI.Controllers
 {
@@ -16,11 +17,13 @@ namespace BackendAPI.Controllers
     {
         private readonly AppConfigClass _appConfiguration;
         private readonly IAuthService _authService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IOptions<AppConfigClass> appConfiguration, IAuthService userService)
+        public AuthController(IOptions<AppConfigClass> appConfiguration, IAuthService userService, ILogger<AuthController> logger)
         {
             _appConfiguration = appConfiguration.Value;
             _authService = userService;
+            _logger = logger;
         }
 
         [HttpPost("Register")]

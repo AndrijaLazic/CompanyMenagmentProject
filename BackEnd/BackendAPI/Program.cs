@@ -1,6 +1,7 @@
 using BackendAPI;
 using BackendAPI.Middlewares;
 using DOMAIN.Shared;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging();
+
 app.UseHttpsRedirection();
 
 app.UseCors("_myAllowSpecificOrigins");
@@ -36,3 +39,5 @@ app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+

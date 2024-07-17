@@ -1,4 +1,6 @@
-﻿namespace BackendAPI
+﻿using Serilog;
+
+namespace BackendAPI
 {
     public static class AppBuilder
     {
@@ -11,6 +13,12 @@
                 builder.AddJsonFile($"appsettings.json", false, true);
                 builder.AddJsonFile($"appsettings.{enviroment}.json", true, true);
                 builder.AddEnvironmentVariables();
+            });
+
+            //Serilog config
+            hostBuilder.UseSerilog((hostingContext, loggerConfiguration) =>
+            {
+                loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
             });
 
             return hostBuilder;

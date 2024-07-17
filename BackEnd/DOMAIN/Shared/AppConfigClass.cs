@@ -11,17 +11,6 @@ namespace DOMAIN.Shared
         public string ConnectionString { get; set; }
     }
 
-    public class Logging
-    {
-        public LogLevel LogLevel { get; set; }
-    }
-
-    public class LogLevel
-    {
-        public string Default { get; set; }
-        public string MicrosoftAspNetCore { get; set; }
-    }
-
     public class JWTSettings
     {
         public string SECRET_KEY { get; set; }
@@ -29,7 +18,6 @@ namespace DOMAIN.Shared
     }
     public class AppConfigClass
     {
-        public Logging Logging { get; set; }
         public string AllowedHosts { get; set; }
         public Database Database { get; set; }
         public JWTSettings JWTSettings { get; set; }
