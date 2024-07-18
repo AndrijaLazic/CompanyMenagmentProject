@@ -12,5 +12,7 @@ namespace DOMAIN.Abstractions
     {
         Task<ServiceResponse<bool>> RegisterUser(RegistrationDTO registrationDTO);
         Task<ServiceResponse<string>> Login(LoginDTO loginDTO);
+        void RemoveUser(int id);
+
     }
 }

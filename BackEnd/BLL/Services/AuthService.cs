@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -68,6 +69,11 @@ namespace BLL.Services
             response.Data = JWToken.CreateToken(user, _options.JWTSettings);
 
             return response;
+        }
+
+        public void RemoveUser(int id)
+        {
+            _userDataDB.RemoveUser(id);
         }
     }
 }

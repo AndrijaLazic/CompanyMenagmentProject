@@ -11,5 +11,6 @@ namespace DOMAIN.Abstractions
     {
         public int InsertNewUser(User user);
         public User GetUser(string mail);
+        public void RemoveUser(int id);
     }
 }

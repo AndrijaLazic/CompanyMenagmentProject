@@ -53,6 +53,22 @@ namespace BackendAPI.Controllers
             return Ok(response);
         }
 
+        [HttpDelete("RemoveUser/{id}")]
+        [Authorize(Policy = "UserIsAdmin")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        public async Task<ActionResult<bool>> RemoveUser(int id)
+        {
+            ServiceResponse<bool> response = new ServiceResponse<bool>();
+
+            _authService.RemoveUser(id);
+
+            response.Data = true;
+            response.Message = "UserRemoved:"+id.ToString();
+
+            return Ok(response);
+        }
+
 
     }
 }
