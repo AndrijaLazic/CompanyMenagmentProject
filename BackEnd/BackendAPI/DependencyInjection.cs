@@ -1,10 +1,14 @@
 ﻿using BLL.Services;
 using DAL;
 using DOMAIN.Abstractions;
+using DOMAIN.Enums;
 using DOMAIN.Models.Database;
 using DOMAIN.Shared;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BackendAPI
 {
@@ -18,7 +22,31 @@ namespace BackendAPI
             services.AddDbContext<CompanyMenagmentProjectContext>(
                 options => options.UseSqlServer(appConfig.Database.ConnectionString));
 
-            
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = configuration["MyAppSettings:JWTSettings:ISSUER"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["MyAppSettings:JWTSettings:SECRET_KEY"])),
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UserIsAdmin", p =>
+                {
+                    p.RequireClaim("workerType", ((int)EWorkerTypes.Admin).ToString());
+                });
+            });
 
             // Add services to the container.
 

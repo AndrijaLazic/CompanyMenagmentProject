@@ -1,5 +1,6 @@
 using BackendAPI;
 using BackendAPI.Middlewares;
+using DOMAIN.Enums;
 using DOMAIN.Shared;
 using Serilog;
 
@@ -24,12 +25,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseSerilogRequestLogging();
+else
+{
+    app.UseSerilogRequestLogging();
+}
 
 app.UseHttpsRedirection();
 
 app.UseCors("_myAllowSpecificOrigins");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -15,6 +15,7 @@ namespace DOMAIN.Shared
     {
         public string SECRET_KEY { get; set; }
         public string JWT_DURRATION { get; set; }
+        public string ISSUER {  get; set; }
     }
     public class AppConfigClass
     {

@@ -2,6 +2,7 @@
 using DOMAIN.Models.DTO;
 using DOMAIN.Models.DTR;
 using DOMAIN.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -27,6 +28,7 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost("Register")]
+        [Authorize(Policy = "UserIsAdmin")]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]

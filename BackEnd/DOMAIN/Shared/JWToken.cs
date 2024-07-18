@@ -15,16 +15,18 @@ namespace DOMAIN.Shared
                 new Claim("phoneNumber",user.PhoneNumber),
                 new Claim("email",user.Email),
                 new Claim("name",user.Name),
-                new Claim("id",user.Name)
+                new Claim("id",user.Name),
+                new Claim("workerType",user.WorkerType.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTSettings.SECRET_KEY));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(double.Parse(jWTSettings.JWT_DURRATION)),
-                signingCredentials: creds
+                signingCredentials: creds,
+                issuer: jWTSettings.ISSUER
                 );
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

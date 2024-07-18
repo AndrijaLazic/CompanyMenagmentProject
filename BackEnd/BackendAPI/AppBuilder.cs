@@ -16,10 +16,14 @@ namespace BackendAPI
             });
 
             //Serilog config
-            hostBuilder.UseSerilog((hostingContext, loggerConfiguration) =>
+            if (!enviroment.Equals("Development"))
             {
-                loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
-            });
+                hostBuilder.UseSerilog((hostingContext, loggerConfiguration) =>
+                {
+                    loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
+                });
+            }
+            
 
             return hostBuilder;
         }
