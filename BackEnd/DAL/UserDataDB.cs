@@ -65,7 +65,7 @@ namespace DAL
             return res;
         }
 
-        public User GetUser(string mail)
+        public User? GetUser(string mail)
         {
             SqlParameter[] parms =
             [
