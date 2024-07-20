@@ -27,4 +27,8 @@
     <ProjectReference Include="..\DOMAIN\DOMAIN.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="BackendTests"/>
+	</ItemGroup>
+
 </Project>

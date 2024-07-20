@@ -1,3 +1,4 @@
 ﻿{
-  "AppSettingsRoot": "C:\\Users\\kebab\\Desktop\\faks\\CompanyMenagmentProject\\BackEnd\\BackendAPI\\appsettings.Development.json"
+  "AppSettingsRoot": "C:\\Users\\kebab\\Desktop\\faks\\CompanyMenagmentProject\\BackEnd\\BackendAPI\\appsettings.Development.json",
+  "BaseApiURL": "http://localhost"
 }

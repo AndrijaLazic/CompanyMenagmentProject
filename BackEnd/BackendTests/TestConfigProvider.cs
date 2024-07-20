@@ -1,4 +1,5 @@
-﻿using DOMAIN.Shared;
+﻿using Docker.DotNet.Models;
+using DOMAIN.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,40 +25,44 @@ namespace BackendTests
             
             lock (padlock)
             {
-                if (testConfigInstance == null)
+                if(testConfigInstance == null)
                 {
                     var jsonString = File.ReadAllText("./TestConfig.json");
                     testConfigInstance = JsonSerializer.Deserialize<TestConfig>(jsonString)!;
+                }
+                if(appConfigInstance == null)
+                {
+                    appConfigInstance = GetAppConfig();
                 }
                 return testConfigInstance!;
             }
             
         }
 
-        public static AppConfigClass GetAppConfig()
+        private static AppConfigClass GetAppConfig()
         {
-            TestConfig testConfig = GetTestConfig();
-            lock (padlock)
-            {
-                if (appConfigInstance == null)
-                {
-                    var jsonString = File.ReadAllText(testConfig.AppSettingsRoot);
-                    using (JsonDocument document = JsonDocument.Parse(jsonString))
-                    {
-                        JsonElement root = document.RootElement;
-                        JsonElement addressElement = root.GetProperty("MyAppSettings");
-                        string addressJson = addressElement.GetRawText();
 
-                        appConfigInstance = JsonSerializer.Deserialize<AppConfigClass>(addressJson)!;
-                    }
+            
+            if (appConfigInstance == null)
+            {
+                var jsonString = File.ReadAllText(testConfigInstance.AppSettingsRoot);
+                using (JsonDocument document = JsonDocument.Parse(jsonString))
+                {
+                    JsonElement root = document.RootElement;
+                    JsonElement addressElement = root.GetProperty("MyAppSettings");
+                    string addressJson = addressElement.GetRawText();
+
+                    appConfigInstance = JsonSerializer.Deserialize<AppConfigClass>(addressJson)!;
                 }
-                return appConfigInstance;
             }
+            return appConfigInstance;
+            
         }
     }
 
     public class TestConfig
     {
         public string AppSettingsRoot { get; set; }
+        public string BaseApiURL { get; set; }
     }
 }
