@@ -37,6 +37,21 @@
           }
         }
       }
+    },
+    {
+      "label": "end serve",
+      "command": "echo ${input:terminate}",
+      "type": "shell",
+      "problemMatcher": []
+    },
+  ],
+  "inputs": [
+    //Input to pass the argument terminateAll to workbench.terminate
+    {
+      "id": "terminate",
+      "type": "command",
+      "command": "workbench.action.tasks.terminate",
+      "args": "terminateAll"
     }
   ]
 }
