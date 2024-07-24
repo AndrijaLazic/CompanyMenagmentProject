@@ -26,29 +26,37 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right" id="UserNavMenu">
-        <li class="nav-item me-3 me-lg-0">
-          <button
-            mat-button
-            [matMenuTriggerFor]="menu"
-            aria-label="Example icon-button with a menu"
+        <li class="nav-item me-3 me-lg-0 dropdown">
+          <a
+            class="dropdown-toggle d-flex align-items-center justify-content-center"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
           >
-            Login/Signup
             <mat-icon
               aria-hidden="false"
               aria-label="Example home icon"
               fontIcon="account_circle"
             ></mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="login()">
-              <mat-icon
-                aria-hidden="false"
-                aria-label="Example home icon"
-                fontIcon="login"
-              ></mat-icon>
-              <span>Login</span>
-            </button>
-          </mat-menu>
+            Login
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-lg-end">
+            <li>
+              <a
+                class="dropdown-item d-flex align-items-center justify-content-center"
+                href="#"
+                ><mat-icon
+                  aria-hidden="false"
+                  aria-label="Example home icon"
+                  fontIcon="login"
+                  routerLink="/login"
+                ></mat-icon
+                >Login</a
+              >
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

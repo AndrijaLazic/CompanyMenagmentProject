@@ -1,0 +1,19 @@
+#footerContainer {
+	width: 100vw;
+	max-width: 100%;
+	padding-left: var(--padingLeft);
+	padding-right: var(--padingRight);
+	border: 0px;
+	background-color: var(--background-color-4);
+	color: var(--NavbarFooterTextColor);
+}
+
+#footerContainer i {
+	color: var(--NavbarFooterIconColor);
+}
+@media only screen and (max-width: 992px) {
+	#footerContainer {
+		padding-left: var(--BreakpointPadingLeft);
+		padding-right: var(--BreakpointPadingRight);
+	}
+}

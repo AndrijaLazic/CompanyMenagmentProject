@@ -21,7 +21,7 @@
 
 #siteNavbar {
 	font-size: 20px;
-
+  width: 100%;
 	background-color: var(--background-color-4);
 }
 
@@ -57,14 +57,32 @@
 }
 
 #siteNavbar .navbar-collapse a:hover {
-	background-color: var(--background-color-5);
+	background-color: var(--background-color-4);
 }
-#siteNavbar .dropdown-menu a {
-	color: var(--background-color-4);
-	text-align: center;
-}
+
+
 #siteNavbar .dropdown-menu a:hover {
 	color: var(--navbar-text-color);
+}
+
+
+
+#siteNavbar{
+  #UserNavMenu {
+    .dropdown-menu{
+      background-color:var(--background-color-5);
+      padding-left: 10px;
+      padding-right: 10px;
+      a{
+        color: var(--text-color-1);
+        text-align: center;
+      }
+    }
+    .dropdown-toggle{
+      text-decoration: none;
+    }
+
+  }
 }
 
 

@@ -1,0 +1,9 @@
+#MainContainer {
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+
+	/* new small viewport height for modern browsers */
+	min-height: 100svh;
+  overflow: hidden;
+  width: 100vw;
+}
