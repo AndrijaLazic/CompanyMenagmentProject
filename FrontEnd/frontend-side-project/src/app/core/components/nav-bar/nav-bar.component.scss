@@ -1,0 +1,70 @@
+.Logo {
+	aspect-ratio: 1 / 1;
+	background-image: url(/assets/pictures/ProjectLogo.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+
+	min-width: 50px;
+}
+.LogoContainer {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 10px;
+  justify-content: center;
+  align-items: center;
+  padding-right: 30px;
+}
+.LogoText{
+  height: fit-content;
+}
+
+#siteNavbar {
+	font-size: 20px;
+
+	background-color: var(--background-color-4);
+}
+
+
+#siteNavbar a {
+	color: var(--NavbarFooterTextColor);
+}
+
+#UserNavMenu{
+  button{
+    font-size: 20px;
+  }
+}
+
+
+#siteNavbar div .input-group-append button {
+	border-color: var(--background-color-4) !important;
+}
+#siteNavbar button.navbar-toggler span.navbar-toggler-icon {
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+}
+
+#siteNavbar button.navbar-toggler {
+	border-color: var(--NavbarFooterTextColor);
+}
+
+.input-group {
+	margin: auto;
+}
+
+#siteNavbar .navbar-collapse a {
+	border-radius: 10px;
+}
+
+#siteNavbar .navbar-collapse a:hover {
+	background-color: var(--background-color-5);
+}
+#siteNavbar .dropdown-menu a {
+	color: var(--background-color-4);
+	text-align: center;
+}
+#siteNavbar .dropdown-menu a:hover {
+	color: var(--navbar-text-color);
+}
+
+

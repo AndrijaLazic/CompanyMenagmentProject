@@ -1,4 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+	--text-color-1: #f6f6f6;
+	--text-error-color-1: #FA7070;
+	--background-color-1: #1e56a0;
+	--background-color-2: #163172;
+	--background-color-3: #f2f2f2;
+	--background-color-4: #212529;
+	--background-color-5: #3c3d3e;
+
+	--navbar-text-color: #f9f9f9;
+	--navbar-icon-color: #f9f9f9;
+
+	--padingLeft: 17%;
+	--padingRight: 17%;
+	--BreakpointPadingLeft: 5%;
+	--BreakpointPadingRight: 5%;
+
+	--NavbarFooterTextColor: #f9f9f9;
+	--NavbarFooterIconColor: #f9f9f9;
+
+	--ProductTextColor1: #000000;
+	--ProductPriceColor1: #0c0;
+	text-align: center;
+}
+
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
