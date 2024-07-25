@@ -1,5 +1,37 @@
-#SEX{
-  background-color: red;
-  width: 200px;
-  height: 200px;
+#LoginForm{
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  min-height: 80%;
+  form{
+    padding: 30px;
+    max-width: 100%;
+    background-color: var(--background-color-4);
+    width: fit-content;
+    border-radius: 20px;
+
+    ::ng-deep .mdc-line-ripple::after{
+      border-bottom-color:white;
+    }
+    ::ng-deep .mdc-text-field--focused label{
+      color: white !important;
+    }
+
+  }
+
+  #SubmitButton{
+    margin-top: 25px;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  #LoginForm{
+    form{
+      width: 100%;
+      mat-form-field{
+        width: 100%;
+      }
+    }
+  }
 }

@@ -1,1 +1,52 @@
-<p id="SEX">login-page works!</p>
+<div id="LoginForm">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <h1 style="color: white">Login form</h1>
+    <div>
+      <mat-form-field class="example-full-width">
+        <mat-label>Email</mat-label>
+        <input
+          type="text"
+          matInput
+          id="email"
+          formControlName="email"
+          [errorStateMatcher]="matcher"
+          placeholder="example@gmail.com"
+        />
+
+        @if (loginForm.get("email")?.errors?.["required"]) {
+          <mat-error>Email is <strong>required</strong></mat-error>
+        } @else if (
+          loginForm.get("email")?.invalid && loginForm.get("email")?.touched
+        ) {
+          <mat-error>Please enter a valid email</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="example-full-width" id="passwordInput">
+        <mat-label>Password</mat-label>
+        <input
+          type="password"
+          matInput
+          formControlName="password"
+          [errorStateMatcher]="matcher"
+          placeholder="*******"
+        />
+
+        @if (loginForm.get("password")?.errors?.["required"]) {
+          <mat-error>Email is <strong>required</strong></mat-error>
+        } @else if (
+          loginForm.get("password")?.invalid &&
+          loginForm.get("password")?.touched
+        ) {
+          <mat-error>Please enter a valid password</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <button mat-fab extended type="submit" id="SubmitButton">
+      <mat-icon>login</mat-icon>
+      Login
+    </button>
+  </form>
+</div>

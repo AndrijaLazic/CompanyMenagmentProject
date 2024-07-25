@@ -5,10 +5,9 @@ import { LoginPageComponent } from './core/pages/login-page/login-page.component
 export const routes: Routes = [
   {
     path: 'auth',
-    component: LoginPageComponent,
-    // children: [
-    //   { path: 'login', component: LoginPageComponent },
-    //   { path: '', redirectTo: '/first-component', pathMatch: 'full' },
-    // ],
+    children: [
+      { path: 'login', component: LoginPageComponent },
+      { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+    ],
   },
 ];

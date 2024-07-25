@@ -82,7 +82,17 @@
       text-decoration: none;
     }
 
+    .dropdown-toggle > mat-icon:nth-child(1){
+      margin-right: 5px;
+    }
+
+    a.dropdown-item{
+      mat-icon{
+        margin-right: 5px;
+      }
+    }
   }
+
 }
 
 
