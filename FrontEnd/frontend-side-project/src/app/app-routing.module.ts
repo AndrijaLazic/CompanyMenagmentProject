@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { LoginPageComponent } from './core/pages/login-page/login-page.component';
-import { AdminPanelPageComponent } from './core/pages/admin-panel-page/admin-panel-page.component';
+import { isAdminGuard } from './core/guards/is-admin.guard';
 
 export const routes: Routes = [
   {
@@ -13,6 +12,10 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminPanelPageComponent,
+    canActivate: [isAdminGuard],
+    loadChildren: () =>
+      import('./core/modules/admin-lazy-load/admin-lazy-load.module').then(
+        (m) => m.AdminLazyLoadModule,
+      ),
   },
 ];
