@@ -82,7 +82,7 @@ namespace DAL
 
             SqlParameter[] parms =
             [
-                new SqlParameter { ParameterName = "@Date", Value = date.ToString("dd/MM/yyyy") },
+                new SqlParameter { ParameterName = "@Date", Value = date.ToString("yyyy/MM/dd") },
                 new SqlParameter { ParameterName = "@Offset", Value =  offset},
                 new SqlParameter { ParameterName = "@NumOfRows", Value = numOfRows }
             ];

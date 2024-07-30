@@ -1,32 +1,145 @@
 <div class="container" id="WorkCalendarWrapper">
-  <div class="card flex justify-content-center">
+  <div class="flex justify-content-center" id="TableButtons">
     <p-calendar
       [(ngModel)]="selectedDate"
       dateFormat="dd-mm-yy"
       [showIcon]="true"
       [firstDayOfWeek]="1"
     ></p-calendar>
+    <p-button label="Add" icon="pi pi-plus-circle" />
   </div>
 
   <p-table
     [value]="workReservations"
     styleClass="p-datatable-striped"
     [tableStyle]="{ 'min-width': '50rem' }"
+    dataKey="rowId"
+    editMode="row"
   >
     <ng-template pTemplate="header">
-      <tr>
-        <th>Date</th>
+      <tr class="text-start">
         <th>Name</th>
-        <th>Category</th>
-        <th>Quantity</th>
+        <th>Lastname</th>
+        <th>Shift</th>
+        <th>Worker type</th>
+        <th></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product>
-      <tr>
-        <td>{{ product.code }}</td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.category }}</td>
-        <td>{{ product.quantity }}</td>
+    <ng-template
+      pTemplate="body"
+      let-editing="editing"
+      let-product
+      let-ri="rowIndex"
+    >
+      <tr [pEditableRow]="product">
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="product.name" />
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ product.name }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="product.lastname" />
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ product.lastname }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown
+                [options]="shiftTypes"
+                appendTo="body"
+                [(ngModel)]="product.shift"
+                [style]="{ width: '100%' }"
+              ></p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+              @switch (product.shift) {
+                @case (1) {
+                  06-14
+                }
+                @case (2) {
+                  14-20
+                }
+                @default {
+                  err
+                }
+              }
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown
+                [options]="workerTypes"
+                appendTo="body"
+                [(ngModel)]="product.shift"
+                [style]="{ width: '100%' }"
+              ></p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+              @switch (product.workerType) {
+                @case (0) {
+                  <td>Admin</td>
+                }
+                @case (1) {
+                  <td>Menager</td>
+                }
+                @case (2) {
+                  <td>Worker</td>
+                }
+                @default {
+                  <td>err</td>
+                }
+              }
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <div class="flex align-items-center justify-content-center gap-2">
+            <button
+              *ngIf="!editing"
+              pButton
+              pRipple
+              type="button"
+              pInitEditableRow
+              icon="pi pi-pencil"
+              (click)="onRowEditInit(product)"
+              class="p-button-rounded p-button-text"
+            ></button>
+            <button
+              *ngIf="editing"
+              pButton
+              pRipple
+              type="button"
+              pSaveEditableRow
+              icon="pi pi-check"
+              (click)="onRowEditSave(product)"
+              class="p-button-rounded p-button-text p-button-success mr-2"
+            ></button>
+            <button
+              *ngIf="editing"
+              pButton
+              pRipple
+              type="button"
+              pCancelEditableRow
+              icon="pi pi-times"
+              (click)="onRowEditCancel(product, ri)"
+              class="p-button-rounded p-button-text p-button-danger"
+            ></button>
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>

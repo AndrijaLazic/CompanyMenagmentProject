@@ -23,7 +23,7 @@ CREATE PROCEDURE spGetShifsForAllUsers
 	@NumOfRows [int]
 AS
 BEGIN
-	SELECT Date,Shift,UserId,Name,Lastname,WorkerType
+	SELECT WorkCalendar.Id as RowId,Date,Shift,UserId,Name,Lastname,WorkerType
 	FROM WorkCalendar
 	INNER JOIN Users on WorkCalendar.UserId = Users.Id
 	WHERE Date=@Date 

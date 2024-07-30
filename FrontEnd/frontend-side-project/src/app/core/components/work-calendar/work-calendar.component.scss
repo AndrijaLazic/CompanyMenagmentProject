@@ -1,4 +1,15 @@
 #WorkCalendarWrapper{
   color: white;
-  background-color: red;
+  padding: 10px;
+  background-color: var(--background-color-4);
 }
+
+#TableButtons{
+  padding: 15px;
+  border-bottom: 2px solid black;
+  //for first line of children
+  > * {
+    padding: 10px;
+  }
+}
+

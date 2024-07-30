@@ -8,6 +8,7 @@ namespace DOMAIN.Models.DTR
 {
     public class WorkCalendarAllUsersDTR
     {
+        public int RowId {  get; set; }
         public DateTime Date { get; set; }
         public byte Shift { get; set; }
         public int UserId { get; set; }

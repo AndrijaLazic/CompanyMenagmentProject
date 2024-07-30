@@ -18,4 +18,20 @@ export class WorkCalendarService {
       },
     );
   }
+
+  GetWorkCalendarForAllUsers(
+    dateString: string,
+    offset: number,
+    numOfRows: number,
+  ) {
+    return this._httpClient.get(
+      environment.BASE_URL +
+        'WorkCalendar/GetWorkCalendarForDate/' +
+        dateString +
+        '?offset=' +
+        offset +
+        '&numOfRows=' +
+        numOfRows,
+    );
+  }
 }
