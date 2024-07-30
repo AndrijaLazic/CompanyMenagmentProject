@@ -2,6 +2,7 @@
 using DOMAIN.Abstractions;
 using DOMAIN.Models.Database;
 using DOMAIN.Models.DTO;
+using DOMAIN.Models.DTR;
 using DOMAIN.Shared;
 using Microsoft.Extensions.Options;
 using System;
@@ -23,7 +24,7 @@ namespace BLL.Services
             _workCalendarDB = workCalendarDB;
         }
 
-        public async Task<List<WorkCalendar>> GetWorkCalendarForUser(string userToken, DateOnly date)
+        public async Task<List<WorkCalendar>> GetWorkCalendarForUser(string userToken, DateOnly date , int offset, int numOfRows)
         {
             string userId = JWToken.ValidateToken(userToken,_options.JWTSettings);
             if(userId == null)
@@ -31,7 +32,13 @@ namespace BLL.Services
                 throw new Exception("BadJWToken");
             }
 
-            return _workCalendarDB.GetWorkCalendarForUser(int.Parse(userId), date);
+            return _workCalendarDB.GetWorkCalendarForUser(int.Parse(userId), date, offset ,numOfRows);
+        }
+
+        public async Task<List<WorkCalendarAllUsersDTR>> GetWorkCalendarForAllUsers(DateOnly date, int offset, int numOfRows)
+        {
+
+            return _workCalendarDB.GetWorkCalendarForAllUsers(date, offset, numOfRows);
         }
     }
 }

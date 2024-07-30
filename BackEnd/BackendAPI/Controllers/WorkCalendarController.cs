@@ -13,7 +13,7 @@ namespace BackendAPI.Controllers
 {
     
     [Route("[controller]")]
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class WorkCalendarController : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace BackendAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost("GetWorkCalendar")]
+        [HttpPost("GetMyWorkCalendar")]
         public async Task<ActionResult<List<WorkCalendar>>> AddWorkRegistration(GetWorkCalendarDTO dto)
         {
             DateOnly date = DateOnly.Parse(dto.dateString);
@@ -37,7 +37,19 @@ namespace BackendAPI.Controllers
             string tokenValue = accessToken[0]!.Split(" ")[1];
 
 
-            serviceResponse.Data = await _workerService.GetWorkCalendarForUser(tokenValue, date);
+            serviceResponse.Data = await _workerService.GetWorkCalendarForUser(tokenValue, date, dto.offset, dto.numOfRows);
+
+            return Ok(serviceResponse);
+        }
+
+        //[Authorize(Policy = "UserIsAdmin")]
+        [HttpGet("GetWorkCalendarForDate/{date}")]
+        public async Task<ActionResult<List<WorkCalendarAllUsersDTR>>> GetWorkCalendarForDate(DateOnly date, [FromQuery] int offset, [FromQuery] int numOfRows)
+        {
+  
+            ServiceResponse<List<WorkCalendarAllUsersDTR>> serviceResponse = new ServiceResponse<List<WorkCalendarAllUsersDTR>>();
+
+            serviceResponse.Data = await _workerService.GetWorkCalendarForAllUsers(date, offset, numOfRows);
 
             return Ok(serviceResponse);
         }
