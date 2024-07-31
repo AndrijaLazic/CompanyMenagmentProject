@@ -2,6 +2,7 @@
   color: white;
   padding: 10px;
   background-color: var(--background-color-4);
+  border-radius: 20px;
 }
 
 #TableButtons{
@@ -12,4 +13,20 @@
     padding: 10px;
   }
 }
+
+:host ::ng-deep{
+  #Table{
+    >div{
+      padding: 10px;
+    }
+    // .p-datatable-table tr:nth-child(even){
+    //   background-color: #e3e3ec;
+    // }
+  }
+}
+
+#TableRow{
+  border: 2px solid black;
+}
+
 

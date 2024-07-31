@@ -11,24 +11,31 @@ import { DatePipe } from '@angular/common';
 })
 export class AdminPanelPageComponent {
   private workCalendarService = inject(WorkCalendarService);
-
+  private datePipe = inject(DatePipe);
   currentDateString: string = '';
 
   workCalendar: WorkResertvationDTR[] = [];
   constructor() {
     const now = new Date();
-    const datePipe = inject(DatePipe);
-    let dateString = datePipe.transform(now, 'MM-dd-yyyy');
+
+    let dateString = this.datePipe.transform(now, 'MM-dd-yyyy');
     if (dateString) {
       this.currentDateString = dateString;
     }
+    this.getWorkForDate(dateString!);
+  }
 
+  newDateEvent(event: Date) {
+    let dateString = this.datePipe.transform(event, 'MM-dd-yyyy');
+    this.getWorkForDate(dateString!);
+  }
+
+  private getWorkForDate(dateString: string) {
     this.workCalendarService
-      .GetWorkCalendarForAllUsers(this.currentDateString, 0, 10)
+      .GetWorkCalendarForAllUsers(dateString, 0, 10)
       .subscribe({
         next: (response: any) => {
           this.workCalendar = response.data;
-          console.log(this.workCalendar);
         },
         error: (error) => {
           console.log(error);

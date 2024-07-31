@@ -5,16 +5,28 @@
       dateFormat="dd-mm-yy"
       [showIcon]="true"
       [firstDayOfWeek]="1"
+      (onSelect)="ChangeDate($event)"
     ></p-calendar>
     <p-button label="Add" icon="pi pi-plus-circle" />
+    <p-button
+      label="Remove selected"
+      icon="pi pi-trash"
+      [disabled]="selectedRows.length == 0"
+      severity="danger"
+      (onClick)="removeRow()"
+    />
   </div>
 
   <p-table
     [value]="workReservations"
     styleClass="p-datatable-striped"
-    [tableStyle]="{ 'min-width': '50rem' }"
+    [tableStyle]="{ width: '100%' }"
     dataKey="rowId"
     editMode="row"
+    selectionMode="multiple"
+    [(selection)]="selectedRows"
+    [metaKeySelection]="true"
+    id="Table"
   >
     <ng-template pTemplate="header">
       <tr class="text-start">
@@ -22,7 +34,9 @@
         <th>Lastname</th>
         <th>Shift</th>
         <th>Worker type</th>
-        <th></th>
+        @if (editableTable) {
+          <th style="width: 10%"></th>
+        }
       </tr>
     </ng-template>
     <ng-template
@@ -30,8 +44,14 @@
       let-editing="editing"
       let-product
       let-ri="rowIndex"
+      let-rowIndex="rowIndex"
     >
-      <tr [pEditableRow]="product">
+      <tr
+        [pEditableRow]="product"
+        [pSelectableRow]="product"
+        [pSelectableRowIndex]="rowIndex"
+        id="TableRow"
+      >
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
@@ -105,41 +125,42 @@
             </ng-template>
           </p-cellEditor>
         </td>
-
-        <td>
-          <div class="flex align-items-center justify-content-center gap-2">
-            <button
-              *ngIf="!editing"
-              pButton
-              pRipple
-              type="button"
-              pInitEditableRow
-              icon="pi pi-pencil"
-              (click)="onRowEditInit(product)"
-              class="p-button-rounded p-button-text"
-            ></button>
-            <button
-              *ngIf="editing"
-              pButton
-              pRipple
-              type="button"
-              pSaveEditableRow
-              icon="pi pi-check"
-              (click)="onRowEditSave(product)"
-              class="p-button-rounded p-button-text p-button-success mr-2"
-            ></button>
-            <button
-              *ngIf="editing"
-              pButton
-              pRipple
-              type="button"
-              pCancelEditableRow
-              icon="pi pi-times"
-              (click)="onRowEditCancel(product, ri)"
-              class="p-button-rounded p-button-text p-button-danger"
-            ></button>
-          </div>
-        </td>
+        @if (editableTable) {
+          <td>
+            <div class="flex align-items-center justify-content-center gap-2">
+              <button
+                *ngIf="!editing"
+                pButton
+                pRipple
+                type="button"
+                pInitEditableRow
+                icon="pi pi-pencil"
+                (click)="onRowEditInit(product)"
+                class="p-button-rounded p-button-text"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton
+                pRipple
+                type="button"
+                pSaveEditableRow
+                icon="pi pi-check"
+                (click)="onRowEditSave(product)"
+                class="p-button-rounded p-button-text p-button-success mr-2"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton
+                pRipple
+                type="button"
+                pCancelEditableRow
+                icon="pi pi-times"
+                (click)="onRowEditCancel(product, ri)"
+                class="p-button-rounded p-button-text p-button-danger"
+              ></button>
+            </div>
+          </td>
+        }
       </tr>
     </ng-template>
   </p-table>

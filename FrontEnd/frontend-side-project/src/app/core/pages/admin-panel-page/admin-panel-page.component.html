@@ -1,1 +1,5 @@
-<app-work-calendar [workReservations]="workCalendar"></app-work-calendar>
+<app-work-calendar
+  [workReservations]="workCalendar"
+  (newDateEvent)="newDateEvent($event)"
+  [editableTable]="true"
+></app-work-calendar>

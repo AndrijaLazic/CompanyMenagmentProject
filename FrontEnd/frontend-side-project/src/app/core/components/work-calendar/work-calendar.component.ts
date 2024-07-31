@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { WorkResertvationDTR } from '../../../shared/models/DTR/WorkResertvationDTR';
 import { TableModule } from 'primeng/table';
 import { CalendarModule } from 'primeng/calendar';
@@ -23,7 +23,9 @@ import { ButtonModule } from 'primeng/button';
 export class WorkCalendarComponent {
   @Input() workReservations: WorkResertvationDTR[] = [];
   @Input() editableTable: boolean = false;
+  @Output() newDateEvent = new EventEmitter<Date>();
 
+  selectedRows = [];
   shiftTypes = [
     { label: '06-14', value: 1 },
     { label: '14-20', value: 2 },
@@ -53,5 +55,19 @@ export class WorkCalendarComponent {
     this.workReservations[index] =
       this.clonedReservations[product.rowId.toString()];
     delete this.clonedReservations[product.rowId.toString()];
+  }
+
+  ChangeDate(value: Date) {
+    this.newDateEvent.emit(value);
+  }
+
+  removeRow() {
+    this.selectedRows.forEach((element) => {
+      const index = this.workReservations.indexOf(element, 0);
+      if (index > -1) {
+        this.workReservations.splice(index, 1);
+      }
+    });
+    this.selectedRows = [];
   }
 }
