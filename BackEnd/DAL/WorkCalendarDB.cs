@@ -94,6 +94,11 @@ namespace DAL
             return res.ToList();
         }
 
+        public ShiftType[] GetShiftTypes()
+        {
+            return _databaseContext.ShiftTypes.ToArray();
+        }
+
         private void ExecuteWithDynamic(string sql, SqlParameter[] parms)
         {
             using (var cmd = _databaseContext.Database.GetDbConnection().CreateCommand())

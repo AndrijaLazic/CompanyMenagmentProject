@@ -13,5 +13,7 @@ namespace DOMAIN.Abstractions
         public User GetUser(string mail);
         public User GetUser(int id);
         public void RemoveUser(int id);
+        public User[] GetAllUsers();
+        public WorkerType[] GetWorkerTypes();
     }
 }

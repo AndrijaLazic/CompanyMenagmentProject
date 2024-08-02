@@ -1,6 +1,7 @@
 ﻿using DOMAIN.Abstractions;
 using DOMAIN.Exceptions.SQL;
 using DOMAIN.Models.Database;
+using DOMAIN.Models.DTR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -105,6 +106,17 @@ namespace DAL
             if (user == null)
                 throw new UserNotFound("NoUserWithId");
             return user;
+        }
+
+        public User[] GetAllUsers()
+        {
+            var list = _databaseContext.Users.ToArray();
+            return list;
+        }
+
+        public WorkerType[] GetWorkerTypes()
+        {
+            return _databaseContext.WorkerTypes.ToArray();
         }
     }
 }

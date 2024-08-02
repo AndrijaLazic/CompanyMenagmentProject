@@ -55,6 +55,8 @@ namespace BackendAPI
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<AdminService, AdminService>();
             services.AddScoped<WorkerService, WorkerService>();
+            services.AddScoped<UserService, UserService>();
+            services.AddSingleton<GlobalDataService,GlobalDataService>();
 
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

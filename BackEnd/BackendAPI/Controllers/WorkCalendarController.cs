@@ -13,15 +13,15 @@ namespace BackendAPI.Controllers
 {
     
     [Route("[controller]")]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class WorkCalendarController : ControllerBase
     {
         private readonly AppConfigClass _appConfiguration;
         private readonly WorkerService _workerService;
-        private readonly ILogger<AdminController> _logger;
+        private readonly ILogger<WorkCalendarController> _logger;
 
-        public WorkCalendarController(IOptions<AppConfigClass> appConfiguration, WorkerService workerService, ILogger<AdminController> logger)
+        public WorkCalendarController(IOptions<AppConfigClass> appConfiguration, WorkerService workerService, ILogger<WorkCalendarController> logger)
         {
             _appConfiguration = appConfiguration.Value;
             _workerService = workerService;
@@ -42,7 +42,7 @@ namespace BackendAPI.Controllers
             return Ok(serviceResponse);
         }
 
-        //[Authorize(Policy = "UserIsAdmin")]
+        [Authorize(Policy = "UserIsAdmin")]
         [HttpGet("GetWorkCalendarForDate/{date}")]
         public async Task<ActionResult<List<WorkCalendarAllUsersDTR>>> GetWorkCalendarForDate(DateOnly date, [FromQuery] int offset, [FromQuery] int numOfRows)
         {
