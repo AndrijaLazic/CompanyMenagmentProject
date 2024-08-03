@@ -47,11 +47,11 @@ namespace BLL.Services
 
 
             _frontEndSettingsDTR = new FrontEndSettingsDTR();
-            _frontEndSettingsDTR.userDTRs = new List<UserDTR>();
+            _frontEndSettingsDTR.users = new List<UserDTR>();
             var users = _userDataDB.GetAllUsers();
             for (int i = 0; i < users.Length; i++)
             {
-                _frontEndSettingsDTR.userDTRs.Add(new UserDTR()
+                _frontEndSettingsDTR.users.Add(new UserDTR()
                 {
                     Email = users[i].Email,
                     Id = users[i].Id,
@@ -63,10 +63,10 @@ namespace BLL.Services
             }
 
             var workerTypes = _userDataDB.GetWorkerTypes();
-            _frontEndSettingsDTR.workerTypesDTRs = new List<WorkerTypeDTR>();
+            _frontEndSettingsDTR.workerTypes = new List<WorkerTypeDTR>();
             for (int i = 0; i < workerTypes.Length; i++)
             {
-                _frontEndSettingsDTR.workerTypesDTRs.Add(new WorkerTypeDTR()
+                _frontEndSettingsDTR.workerTypes.Add(new WorkerTypeDTR()
                 {
                     Id = workerTypes[i].Id,
                     TypeName = workerTypes[i].TypeName,
@@ -74,10 +74,10 @@ namespace BLL.Services
             }
 
             var shiftDTRs = _workCalendarDB.GetShiftTypes();
-            _frontEndSettingsDTR.shiftDTRs = new List<ShiftTypeDTR>();
+            _frontEndSettingsDTR.shiftTypes = new List<ShiftTypeDTR>();
             for (int i = 0; i < shiftDTRs.Length; i++)
             {
-                _frontEndSettingsDTR.shiftDTRs.Add(new ShiftTypeDTR()
+                _frontEndSettingsDTR.shiftTypes.Add(new ShiftTypeDTR()
                 {
                     EndTime = shiftDTRs[i].EndTime,
                     ShiftNumber = shiftDTRs[i].ShiftNumber,

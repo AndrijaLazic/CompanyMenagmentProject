@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { LoginDTS } from '../models/DTS/LoginDTS';
 import { environment } from '../../../environments/environment';
 import { GlobalUserStateService } from './global-user-state.service';
-import { TokensDTR } from '../models/DTR/TokensDTR';
+import { TokensDTO } from '../models/DTO/TokensDTO';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class AuthService {
     );
   }
 
-  resetJWT(resetToken: TokensDTR) {
+  resetJWT(resetToken: TokensDTO) {
     return this._httpClient.post(
       environment.BASE_URL + 'Auth/ResetJWT',
       resetToken,

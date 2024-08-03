@@ -83,16 +83,8 @@
               ></p-dropdown>
             </ng-template>
             <ng-template pTemplate="output">
-              @switch (product.shift) {
-                @case (1) {
-                  06-14
-                }
-                @case (2) {
-                  14-20
-                }
-                @default {
-                  err
-                }
+              @if (shiftTypes) {
+                {{ formatShift(product.shift) }}
               }
             </ng-template>
           </p-cellEditor>
@@ -103,24 +95,13 @@
               <p-dropdown
                 [options]="workerTypes"
                 appendTo="body"
-                [(ngModel)]="product.shift"
+                [(ngModel)]="product.workerType"
                 [style]="{ width: '100%' }"
               ></p-dropdown>
             </ng-template>
             <ng-template pTemplate="output">
-              @switch (product.workerType) {
-                @case (0) {
-                  <td>Admin</td>
-                }
-                @case (1) {
-                  <td>Menager</td>
-                }
-                @case (2) {
-                  <td>Worker</td>
-                }
-                @default {
-                  <td>err</td>
-                }
+              @if (workerTypes) {
+                {{ formatWorkerType(product.workerType) }}
               }
             </ng-template>
           </p-cellEditor>

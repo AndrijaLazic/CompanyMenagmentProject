@@ -1,11 +1,19 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { WorkResertvationDTR } from '../../../shared/models/DTR/WorkResertvationDTR';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+} from '@angular/core';
+import { WorkResertvationDTO } from '../../../shared/models/DTO/WorkResertvationDTO';
 import { TableModule } from 'primeng/table';
 import { CalendarModule } from 'primeng/calendar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
+import { GlobalSettingsService } from '../../../shared/services/global-settings.service';
 @Component({
   selector: 'app-work-calendar',
   standalone: true,
@@ -21,37 +29,47 @@ import { ButtonModule } from 'primeng/button';
   styleUrl: './work-calendar.component.scss',
 })
 export class WorkCalendarComponent {
-  @Input() workReservations: WorkResertvationDTR[] = [];
+  @Input() workReservations: WorkResertvationDTO[] = [];
   @Input() editableTable: boolean = false;
   @Output() newDateEvent = new EventEmitter<Date>();
+  globalSettingsSignal = inject(GlobalSettingsService).settings;
 
   selectedRows = [];
-  shiftTypes = [
-    { label: '06-14', value: 1 },
-    { label: '14-20', value: 2 },
-  ];
+  shiftTypes: { label: string; value: number }[] = [];
 
-  workerTypes = [
-    { label: 'Admin', value: 0 },
-    { label: 'Menager', value: 1 },
-    { label: 'Worker', value: 2 },
-  ];
+  workerTypes: { label: string; value: number }[] = [];
 
-  clonedReservations: { [s: string]: WorkResertvationDTR } = {};
+  clonedReservations: { [s: string]: WorkResertvationDTO } = {};
   selectedDate: Date;
   constructor() {
     this.selectedDate = new Date();
+    this.shiftTypes = [];
+    this.workerTypes = [];
+
+    this.globalSettingsSignal()?.shiftTypes.forEach((element) => {
+      this.shiftTypes.push({
+        label: element.startTime + ' - ' + element.endTime,
+        value: element.shiftNumber,
+      });
+    });
+
+    this.globalSettingsSignal()?.workerTypes.forEach((element) => {
+      this.workerTypes.push({
+        label: element.typeName,
+        value: element.id,
+      });
+    });
   }
 
-  onRowEditInit(product: WorkResertvationDTR) {
+  onRowEditInit(product: WorkResertvationDTO) {
     this.clonedReservations[product.rowId] = { ...product };
   }
 
-  onRowEditSave(product: WorkResertvationDTR) {
+  onRowEditSave(product: WorkResertvationDTO) {
     delete this.clonedReservations[product.rowId.toString()];
   }
 
-  onRowEditCancel(product: WorkResertvationDTR, index: number) {
+  onRowEditCancel(product: WorkResertvationDTO, index: number) {
     this.workReservations[index] =
       this.clonedReservations[product.rowId.toString()];
     delete this.clonedReservations[product.rowId.toString()];
@@ -69,5 +87,21 @@ export class WorkCalendarComponent {
       }
     });
     this.selectedRows = [];
+  }
+
+  formatShift(shiftId: number) {
+    var res = this.globalSettingsSignal()?.shiftTypes.filter(
+      (val) => val.shiftNumber == shiftId,
+    );
+    if (res == undefined || res[0] == undefined) return 'Error while formating';
+    return res[0].startTime + ' - ' + res[0].endTime;
+  }
+
+  formatWorkerType(typeId: number) {
+    var res = this.globalSettingsSignal()?.workerTypes.filter(
+      (val) => val.id == typeId,
+    );
+    if (res == undefined || res[0] == undefined) return 'Error while formating';
+    return res[0].typeName;
   }
 }

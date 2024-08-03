@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app/app-routing.module';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from './app/shared/interceptors/token.interceptor';
+
 bootstrapApplication(AppComponent, {
   providers: [
     provideAnimationsAsync(),

@@ -2,7 +2,7 @@ import { computed, Injectable, Signal, signal } from '@angular/core';
 import { User } from '../models/User';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
-import { TokensDTR } from '../models/DTR/TokensDTR';
+import { TokensDTO } from '../models/DTO/TokensDTO';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 
@@ -42,7 +42,7 @@ export class GlobalUserStateService {
       if (helper.isTokenExpired(this.cookieService.get('ResetToken'))) {
         this.logout();
       } else {
-        const tokens: TokensDTR = {
+        const tokens: TokensDTO = {
           jwt: '',
           resetToken: this.cookieService.get('ResetToken'),
         };
@@ -73,7 +73,7 @@ export class GlobalUserStateService {
     sessionStorage.removeItem('UserJWT');
   }
 
-  loginUser(tokens: TokensDTR) {
+  loginUser(tokens: TokensDTO) {
     this.logout();
     const helper = new JwtHelperService();
     const decodedToken = helper.decodeToken(tokens.jwt);

@@ -1,4 +1,4 @@
-export interface WorkResertvationDTR {
+export interface WorkResertvationDTO {
   rowId: number;
   date: string;
   shift: number;

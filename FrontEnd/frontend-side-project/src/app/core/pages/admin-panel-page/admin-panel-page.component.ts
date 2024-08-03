@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { WorkCalendarComponent } from '../../components/work-calendar/work-calendar.component';
-import { WorkResertvationDTR } from '../../../shared/models/DTR/WorkResertvationDTR';
+import { WorkResertvationDTO } from '../../../shared/models/DTO/WorkResertvationDTO';
 import { WorkCalendarService } from '../../../shared/services/work-calendar.service';
 import { DatePipe } from '@angular/common';
+import { GlobalSettingsService } from '../../../shared/services/global-settings.service';
 
 @Component({
   selector: 'app-admin-panel-page',
@@ -14,15 +14,14 @@ export class AdminPanelPageComponent {
   private datePipe = inject(DatePipe);
   currentDateString: string = '';
 
-  workCalendar: WorkResertvationDTR[] = [];
+  workCalendar: WorkResertvationDTO[] = [];
   constructor() {
     const now = new Date();
-
     let dateString = this.datePipe.transform(now, 'MM-dd-yyyy');
     if (dateString) {
       this.currentDateString = dateString;
     }
-    this.getWorkForDate(dateString!);
+    this.getWorkForDate('07-31-2024');
   }
 
   newDateEvent(event: Date) {
