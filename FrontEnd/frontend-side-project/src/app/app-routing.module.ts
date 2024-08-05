@@ -4,6 +4,7 @@ import { isAdminGuard } from './core/guards/is-admin.guard';
 import { isWorkerGuard } from './core/guards/is-worker.guard';
 import { UserProfilePageComponent } from './core/pages/user-profile-page/user-profile-page.component';
 import { isLoggedInGuard } from './core/guards/is-logged-in.guard';
+import { MessagingPageComponent } from './core/pages/messaging-page/messaging-page.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,10 @@ export const routes: Routes = [
       {
         path: '',
         component: UserProfilePageComponent,
+      },
+      {
+        path: 'messages',
+        component: MessagingPageComponent,
       },
       {
         path: ':id',
