@@ -23,6 +23,7 @@
     "@auth0/angular-jwt": "^5.2.0",
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@fullcalendar/angular": "^6.1.15",
+    "@microsoft/signalr": "^8.0.7",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",

@@ -1,8 +1,10 @@
 import { CommonModule, NgFor } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GlobalSettingsService } from '../../../shared/services/global-settings.service';
 import { GlobalUserStateService } from '../../../shared/services/global-user-state.service';
+import { UserChatService } from '../../../shared/services/user-chat.service';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-messaging-page',
@@ -10,11 +12,24 @@ import { GlobalUserStateService } from '../../../shared/services/global-user-sta
   imports: [CommonModule, FormsModule],
   templateUrl: './messaging-page.component.html',
   styleUrl: './messaging-page.component.scss',
+  providers: [UserChatService],
 })
-export class MessagingPageComponent {
+export class MessagingPageComponent implements OnInit, OnDestroy {
   globalSettingsService = inject(GlobalSettingsService);
   globalUserStateService = inject(GlobalUserStateService);
-  constructor() {}
+  userChatService = inject(UserChatService);
+  private UserOnlineMessageObservableSubscription: Subscription | undefined;
+  private UserOfflineMessageObservableSubscription: Subscription | undefined;
+
+  constructor() {
+    this.userChatService.startConnection().subscribe(() => {
+      this.setSocketObservables();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.UserOnlineMessageObservableSubscription?.unsubscribe();
+  }
 
   currentChatId = -1;
   currentChatUser: Worker | null = null;
@@ -66,9 +81,33 @@ export class MessagingPageComponent {
     // });
   }
 
+  private setSocketObservables() {
+    this.UserOnlineMessageObservableSubscription = this.userChatService
+      .receiveMessage('UserOnline')
+      .subscribe({
+        next(value: string) {
+          console.log(value);
+        },
+        error(err) {
+          console.log(err);
+        },
+      });
+
+    this.UserOfflineMessageObservableSubscription = this.userChatService
+      .receiveMessage('UserOffline')
+      .subscribe({
+        next(value: string) {
+          console.log(value);
+        },
+        error(err) {
+          console.log(err);
+        },
+      });
+  }
+
   sendMessage() {
-    // this.signalR.SendMessage(this.currentChatId, this.messageText).then(() => {
-    //   this.messageText = '';
-    // });
+    this.userChatService.sendMessage(
+      this.globalUserStateService.currentUser()?.jwt!,
+    );
   }
 }

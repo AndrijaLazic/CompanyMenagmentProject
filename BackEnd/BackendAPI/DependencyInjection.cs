@@ -57,11 +57,18 @@ namespace BackendAPI
             services.AddScoped<WorkerService, WorkerService>();
             services.AddScoped<UserService, UserService>();
             services.AddSingleton<GlobalDataService,GlobalDataService>();
+            services.AddSingleton<SharedDB, SharedDB>();
 
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
+
 
             services.AddCors(options =>
             {
@@ -70,7 +77,8 @@ namespace BackendAPI
                     {
                         builder.WithOrigins(appConfig.AllowedHosts)
                             .AllowAnyMethod()
-                            .AllowAnyHeader();
+                            .AllowAnyHeader()
+                            .AllowCredentials();
                     });
             });
    

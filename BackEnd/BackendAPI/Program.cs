@@ -1,5 +1,6 @@
 using BackendAPI;
 using BackendAPI.Middlewares;
+using BLL.Socket;
 using DOMAIN.Enums;
 using DOMAIN.Shared;
 using Serilog;
@@ -42,6 +43,8 @@ app.UseAuthorization();
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
+
+app.MapHub<UserChatHub>("/user-chat");
 
 app.Run();
 
