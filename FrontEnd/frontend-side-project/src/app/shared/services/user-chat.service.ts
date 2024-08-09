@@ -27,6 +27,10 @@ export class UserChatService {
     });
   }
 
+  JoinChatOfUser(userId: number) {
+    this.hubConnection.invoke('JoinChatOfUser', userId);
+  }
+
   receiveMessage(message: string): Observable<string> {
     return new Observable<string>((observer) => {
       this.hubConnection.on(message, (message: string) => {

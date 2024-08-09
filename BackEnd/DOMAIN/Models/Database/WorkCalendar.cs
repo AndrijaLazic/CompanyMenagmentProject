@@ -5,6 +5,8 @@ namespace DOMAIN.Models.Database;
 
 public partial class WorkCalendar
 {
+    public int Id { get; set; }
+
     public DateOnly Date { get; set; }
 
     public byte Shift { get; set; }

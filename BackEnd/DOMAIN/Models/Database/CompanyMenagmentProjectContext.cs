@@ -15,9 +15,13 @@ public partial class CompanyMenagmentProjectContext : DbContext
     {
     }
 
+    public virtual DbSet<CommunicationMessage> CommunicationMessages { get; set; }
+
     public virtual DbSet<ShiftType> ShiftTypes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<UserCommunication> UserCommunications { get; set; }
 
     public virtual DbSet<WorkCalendar> WorkCalendars { get; set; }
 
@@ -29,6 +33,21 @@ public partial class CompanyMenagmentProjectContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<CommunicationMessage>(entity =>
+        {
+            entity.Property(e => e.Message).HasMaxLength(250);
+
+            entity.HasOne(d => d.Communication).WithMany(p => p.CommunicationMessages)
+                .HasForeignKey(d => d.CommunicationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CommunicationMessages_UserCommunication");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.CommunicationMessages)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CommunicationMessages_Users");
+        });
+
         modelBuilder.Entity<ShiftType>(entity =>
         {
             entity.HasKey(e => e.ShiftNumber);
@@ -60,11 +79,30 @@ public partial class CompanyMenagmentProjectContext : DbContext
                 .HasConstraintName("FK_Users_WorkerTypes");
         });
 
+        modelBuilder.Entity<UserCommunication>(entity =>
+        {
+            entity.ToTable("UserCommunication");
+
+            entity.HasIndex(e => new { e.User1, e.User2 }, "IX_UniquePair").IsUnique();
+
+            entity.HasOne(d => d.User1Navigation).WithMany(p => p.UserCommunicationUser1Navigations)
+                .HasForeignKey(d => d.User1)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserCommunication_Users1");
+
+            entity.HasOne(d => d.User2Navigation).WithMany(p => p.UserCommunicationUser2Navigations)
+                .HasForeignKey(d => d.User2)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserCommunication_Users2");
+        });
+
         modelBuilder.Entity<WorkCalendar>(entity =>
         {
             entity.HasKey(e => new { e.Date, e.Shift, e.UserId });
 
             entity.ToTable("WorkCalendar");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
             entity.HasOne(d => d.ShiftNavigation).WithMany(p => p.WorkCalendars)
                 .HasForeignKey(d => d.Shift)

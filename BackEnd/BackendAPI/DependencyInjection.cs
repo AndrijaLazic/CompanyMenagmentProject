@@ -51,11 +51,12 @@ namespace BackendAPI
             // Add services to the container.
 
             services.AddScoped<IUserDataDB,UserDataDB>();
+            services.AddScoped<CommunicationDB, CommunicationDB>();
             services.AddScoped<WorkCalendarDB, WorkCalendarDB>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<AdminService, AdminService>();
             services.AddScoped<WorkerService, WorkerService>();
-            services.AddScoped<UserService, UserService>();
+            services.AddScoped<CommunicationService, CommunicationService>();
             services.AddSingleton<GlobalDataService,GlobalDataService>();
             services.AddSingleton<SharedDB, SharedDB>();
 

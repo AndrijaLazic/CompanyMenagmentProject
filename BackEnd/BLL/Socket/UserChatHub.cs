@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using BLL.Services;
 using DAL;
 using DOMAIN.Abstractions;
+using DOMAIN.Exceptions.SQL;
 using DOMAIN.Models.Database;
+using DOMAIN.Models.DTO;
 using DOMAIN.Models.Socket;
 using DOMAIN.Shared;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BLL.Socket
 {
@@ -19,12 +22,14 @@ namespace BLL.Socket
         private IUserDataDB _userDataDB;
         private readonly AppConfigClass _options;
         private SharedDB _sharedDB;
+        private CommunicationDB _communicationDB;
 
-        public UserChatHub(IOptions<AppConfigClass> options, IUserDataDB userDataDB, SharedDB sharedDB)
+        public UserChatHub(IOptions<AppConfigClass> options, IUserDataDB userDataDB, SharedDB sharedDB, CommunicationDB communicationDB)
         {
             _userDataDB = userDataDB;
             _options = options.Value;
             _sharedDB = sharedDB;
+            _communicationDB = communicationDB;
         }
 
         public override async Task OnConnectedAsync()
@@ -50,8 +55,33 @@ namespace BLL.Socket
             Context.Items["JWTtoken"] = JWT;
             Context.Items["UserId"] = userId;
 
-            _sharedDB.setWorkerOnline(userId, Context.ConnectionId);
+            _sharedDB.setWorkerOnline(int.Parse(userId), Context.ConnectionId);
             await Clients.All.UserOnline(userId);
+        }
+        public async Task SendMessage(ChatMessageDTO message)
+        {
+            if (Context.Items["UserId"] == null)
+            {
+                throw new UserNotFound("JWTNotValid");
+            }
+            int myId = int.Parse(Context.Items["UserId"]!.ToString()!);
+
+            //if exists in sql database
+            UserCommunication? userCommunication = _communicationDB.GetCommunication(myId, message.receiverId);
+            if (userCommunication == null)
+            {
+                _communicationDB.AddNewCommunication(myId,message.receiverId);
+                userCommunication = _communicationDB.GetCommunication(myId, message.receiverId);
+            }
+            _communicationDB.AddMessage(message, userCommunication!.Id, myId);
+
+            string? otherUserConn = _sharedDB.GetUserConn(message.receiverId);
+
+            if (otherUserConn == null)
+            {
+                return;
+            }
+            await Clients.Client(otherUserConn!).UserOnline(myId.ToString());
         }
     }
 }

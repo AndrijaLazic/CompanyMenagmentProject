@@ -21,6 +21,12 @@ public partial class User
 
     public byte WorkerType { get; set; }
 
+    public virtual ICollection<CommunicationMessage> CommunicationMessages { get; set; } = new List<CommunicationMessage>();
+
+    public virtual ICollection<UserCommunication> UserCommunicationUser1Navigations { get; set; } = new List<UserCommunication>();
+
+    public virtual ICollection<UserCommunication> UserCommunicationUser2Navigations { get; set; } = new List<UserCommunication>();
+
     public virtual ICollection<WorkCalendar> WorkCalendars { get; set; } = new List<WorkCalendar>();
 
     public virtual WorkerType WorkerTypeNavigation { get; set; } = null!;

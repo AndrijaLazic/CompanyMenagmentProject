@@ -1,5 +1,6 @@
 ﻿using BLL.Services;
 using DOMAIN.Models.Database;
+using DOMAIN.Models.DTO;
 using DOMAIN.Models.DTR;
 using DOMAIN.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -16,15 +17,16 @@ namespace BackendAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly AppConfigClass _appConfiguration;
-        private readonly UserService _userService;
+        private readonly CommunicationService _communicationService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IOptions<AppConfigClass> appConfiguration, UserService userService, ILogger<UserController> logger)
+        public UserController(IOptions<AppConfigClass> appConfiguration, CommunicationService userService, ILogger<UserController> logger)
         {
             _appConfiguration = appConfiguration.Value;
-            _userService = userService;
+            _communicationService = userService;
             _logger = logger;
         }
+
         
     }
 }

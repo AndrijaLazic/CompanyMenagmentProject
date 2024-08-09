@@ -1,0 +1,26 @@
+USE [CompanyMenagmentProject]
+GO
+/****** Object:  Table [dbo].[UserCommunication]    Script Date: 06-Aug-24 23:28:07 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserCommunication](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[User1] [int] NOT NULL,
+	[User2] [int] NOT NULL,
+	[User1Unread] [int] NOT NULL,
+	[User2Unread] [int] NOT NULL,
+ CONSTRAINT [PK_UserCommunication] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_UniquePair]    Script Date: 06-Aug-24 23:28:07 ******/
+CREATE UNIQUE NONCLUSTERED INDEX [IX_UniquePair] ON [dbo].[UserCommunication]
+(
+	[User1] ASC,
+	[User2] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
