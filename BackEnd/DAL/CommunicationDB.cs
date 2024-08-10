@@ -71,5 +71,33 @@ namespace DAL
             });
             _databaseContext.SaveChanges();
         }
+
+        public void IncreaseMessagesUnread(int communicationId,int receiver)
+        {
+            var comm = _databaseContext.UserCommunications.FirstOrDefault(x => x.Id == communicationId);
+            if (comm.User1 == receiver)
+            {
+                comm.User1Unread++;
+            }
+            else
+            {
+                comm.User2Unread++;
+            }
+            _databaseContext.SaveChanges();
+        }
+
+        public void DecresaseMessagesUnread(int communicationId, int receiver)
+        {
+            var comm = _databaseContext.UserCommunications.FirstOrDefault(x => x.Id == communicationId);
+            if (comm.User1 == receiver)
+            {
+                comm.User1Unread = 0;
+            }
+            else
+            {
+                comm.User2Unread = 0;
+            }
+            _databaseContext.SaveChanges();
+        }
     }
 }

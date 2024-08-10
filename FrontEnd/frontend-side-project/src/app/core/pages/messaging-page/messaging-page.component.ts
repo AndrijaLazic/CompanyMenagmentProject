@@ -5,6 +5,10 @@ import { GlobalSettingsService } from '../../../shared/services/global-settings.
 import { GlobalUserStateService } from '../../../shared/services/global-user-state.service';
 import { UserChatService } from '../../../shared/services/user-chat.service';
 import { Observable, Subscription } from 'rxjs';
+import { MessageDTS } from '../../../shared/models/DTS/MessageDTS';
+import { UserCommunication } from '../../../shared/models/UserCommunication';
+import { User } from '../../../shared/models/User';
+import { UserShort } from '../../../shared/models/DTO/GlobalSettingsDTO';
 
 @Component({
   selector: 'app-messaging-page',
@@ -17,30 +21,41 @@ import { Observable, Subscription } from 'rxjs';
 export class MessagingPageComponent implements OnInit, OnDestroy {
   globalSettingsService = inject(GlobalSettingsService);
   globalUserStateService = inject(GlobalUserStateService);
-  userChatService = inject(UserChatService);
+  userChatService: UserChatService;
   private UserOnlineMessageObservableSubscription: Subscription | undefined;
   private UserOfflineMessageObservableSubscription: Subscription | undefined;
+  private UserReceiveMessageObservableSubscription: Subscription | undefined;
+  private NewChatCreatedSubscription: Subscription | undefined;
+  userChats: UserCommunication[] = [];
+  currentChatIndex: number = -1;
+  currentChatUser: UserShort | null = null;
 
   constructor() {
+    this.userChatService = inject(UserChatService);
     this.userChatService.startConnection().subscribe(() => {
       this.setSocketObservables();
+      this.userChatService.JoinServer();
+    });
+
+    this.userChatService.getMyChats().subscribe({
+      next: (value: any) => {
+        this.userChats = value.data;
+        this.userChats.sort();
+      },
+      error: (err) => {
+        console.error(err);
+      },
     });
   }
 
   ngOnDestroy(): void {
     this.UserOnlineMessageObservableSubscription?.unsubscribe();
+    this.UserOfflineMessageObservableSubscription?.unsubscribe();
+    this.UserReceiveMessageObservableSubscription?.unsubscribe();
+    this.NewChatCreatedSubscription?.unsubscribe();
   }
 
-  currentChatId = -1;
-  currentChatUser: Worker | null = null;
-
   messageText = '';
-
-  messages: { message: string; senderId: number }[] = [
-    { senderId: 1, message: 'Pozdrav kolega!!!' },
-    { senderId: 1, message: 'Zasto danas niste bili na poslu?' },
-    { senderId: 2, message: 'Imao sam zdravstvenih problema' },
-  ];
 
   ngOnInit(): void {
     // this.signalR.startConnection(localStorage.getItem('JWT')!);
@@ -57,38 +72,49 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
     // });
   }
 
-  showChat(id: number) {
-    // this.chatService.getWorkerChat(id).subscribe((response: any) => {
-    //   const newChat = new CurrentChat();
-    //   const userWithID = this.signalR.workers().find((x) => x.id === id);
-    //   if (userWithID) {
-    //     newChat.user = userWithID;
-    //   }
-    //   newChat.messages = response.data;
-    //   this.signalR.currentChat.set(newChat);
-    //   this.currentChatId = id;
-    //   this.signalR
-    //     .JoinChatWithUser(+this.globalState.getWorkerData().id!, id)
-    //     .then(() => {
-    //       const currenChatMessagesElement = document.getElementById(
-    //         'current-chat-messages',
-    //       );
-    //       if (currenChatMessagesElement) {
-    //         currenChatMessagesElement.scrollTop =
-    //           currenChatMessagesElement.scrollHeight;
-    //       }
-    //     });
-    // });
+  showChat(workerId: number) {
+    this.currentChatIndex = this.userChats.findIndex(
+      (x) => x.user1 == workerId || x.user2 == workerId,
+    );
+
+    if (this.currentChatIndex == -1) {
+      this.userChats.push({
+        id: -1,
+        communicationMessages: [],
+        user1: this.globalUserStateService.currentUser()?.id! as number,
+        user2: workerId,
+        user1Unread: 0,
+        user2Unread: 0,
+      });
+      this.currentChatIndex = 0;
+    }
+
+    if (
+      this.userChats[this.currentChatIndex]!.user1 ==
+      this.globalUserStateService.currentUser()?.id
+    ) {
+      this.currentChatUser = this.globalSettingsService
+        .settings()
+        ?.users.find(
+          (x) => x.id == this.userChats[this.currentChatIndex]?.user2,
+        )!;
+    } else {
+      this.currentChatUser = this.globalSettingsService
+        .settings()
+        ?.users.find(
+          (x) => x.id == this.userChats[this.currentChatIndex]?.user1,
+        )!;
+    }
   }
 
   private setSocketObservables() {
     this.UserOnlineMessageObservableSubscription = this.userChatService
       .receiveMessage('UserOnline')
       .subscribe({
-        next(value: string) {
+        next: (value: string) => {
           console.log(value);
         },
-        error(err) {
+        error: (err) => {
           console.log(err);
         },
       });
@@ -96,18 +122,47 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
     this.UserOfflineMessageObservableSubscription = this.userChatService
       .receiveMessage('UserOffline')
       .subscribe({
-        next(value: string) {
+        next: (value: string) => {
           console.log(value);
         },
-        error(err) {
+        error: (err) => {
+          console.log(err);
+        },
+      });
+
+    this.UserReceiveMessageObservableSubscription = this.userChatService
+      .receiveMessage('ReceiveMessage')
+      .subscribe({
+        next: (value: string) => {
+          console.log(value);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+
+    this.NewChatCreatedSubscription = this.userChatService
+      .receiveMessage('NewChatCreated')
+      .subscribe({
+        next: (value: any) => {
+          this.userChats[
+            this.userChats.findIndex(
+              ((x) => x.user1 == value.user1 && x.user2 == value.user2) ||
+                ((x) => x.user1 == value.user2 && x.user2 == value.user1),
+            )
+          ] = value;
+        },
+        error: (err) => {
           console.log(err);
         },
       });
   }
 
   sendMessage() {
-    this.userChatService.sendMessage(
-      this.globalUserStateService.currentUser()?.jwt!,
-    );
+    this.userChatService.sendMessage({
+      Message: this.messageText,
+      receiverId: this.currentChatUser?.id!,
+    });
+    this.messageText = '';
   }
 }

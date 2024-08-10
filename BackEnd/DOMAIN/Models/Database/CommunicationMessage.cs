@@ -17,3 +17,4 @@ public partial class CommunicationMessage
 
     public virtual User Sender { get; set; } = null!;
 }
+

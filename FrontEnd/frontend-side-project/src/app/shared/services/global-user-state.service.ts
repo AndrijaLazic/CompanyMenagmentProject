@@ -80,7 +80,7 @@ export class GlobalUserStateService {
     this.currentUser.set({
       jwt: tokens.jwt,
       email: decodedToken.email,
-      id: decodedToken.id,
+      id: +decodedToken.id,
       phoneNumber: decodedToken.phoneNumber,
       lastname: decodedToken.lastname,
       name: decodedToken.name,

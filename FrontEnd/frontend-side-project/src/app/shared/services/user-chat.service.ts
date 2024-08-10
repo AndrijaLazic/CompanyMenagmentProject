@@ -1,10 +1,15 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { GlobalUserStateService } from './global-user-state.service';
+import { MessageDTS } from '../models/DTS/MessageDTS';
+import { HttpClient } from '@angular/common/http';
 
 export class UserChatService {
   private hubConnection: signalR.HubConnection;
+  private globalUser = inject(GlobalUserStateService);
+  private _httpClient = inject(HttpClient);
   constructor() {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.BASE_URL + 'user-chat')
@@ -17,6 +22,7 @@ export class UserChatService {
         .start()
         .then(() => {
           console.log('Connection established with SignalR hub');
+          this.JoinServer();
           observer.next();
           observer.complete();
         })
@@ -27,8 +33,8 @@ export class UserChatService {
     });
   }
 
-  JoinChatOfUser(userId: number) {
-    this.hubConnection.invoke('JoinChatOfUser', userId);
+  JoinServer() {
+    this.hubConnection.invoke('JoinServer', this.globalUser.currentUser()?.jwt);
   }
 
   receiveMessage(message: string): Observable<string> {
@@ -39,7 +45,17 @@ export class UserChatService {
     });
   }
 
-  sendMessage(message: string): void {
-    this.hubConnection.invoke('JoinServer', message);
+  sendMessage(message: MessageDTS): void {
+    this.hubConnection.invoke('SendMessage', message);
+  }
+
+  getMyChats() {
+    return this._httpClient.get(environment.BASE_URL + 'Chat/GetMyChats');
+  }
+
+  getMessages(chatId: number) {
+    return this._httpClient.get(
+      environment.BASE_URL + 'Chat/GetMyChats/' + chatId,
+    );
   }
 }

@@ -9,6 +9,7 @@ using DOMAIN.Abstractions;
 using DOMAIN.Exceptions.SQL;
 using DOMAIN.Models.Database;
 using DOMAIN.Models.DTO;
+using DOMAIN.Models.DTR;
 using DOMAIN.Models.Socket;
 using DOMAIN.Shared;
 using Microsoft.AspNetCore.SignalR;
@@ -38,7 +39,7 @@ namespace BLL.Socket
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            _sharedDB.SetWorkerOffline(Context.Items["UserId"]?.ToString()!);
+            _sharedDB.SetWorkerOffline(int.Parse(Context.Items["UserId"]?.ToString()!));
             await Clients.All.UserOffline(Context.Items["UserId"]?.ToString()!);
         }
 
@@ -65,23 +66,35 @@ namespace BLL.Socket
                 throw new UserNotFound("JWTNotValid");
             }
             int myId = int.Parse(Context.Items["UserId"]!.ToString()!);
-
+            string? otherUserConn = _sharedDB.GetUserConn(message.receiverId);
+            bool chatCreated = false;
             //if exists in sql database
             UserCommunication? userCommunication = _communicationDB.GetCommunication(myId, message.receiverId);
             if (userCommunication == null)
             {
                 _communicationDB.AddNewCommunication(myId,message.receiverId);
                 userCommunication = _communicationDB.GetCommunication(myId, message.receiverId);
+                chatCreated = true;
             }
             _communicationDB.AddMessage(message, userCommunication!.Id, myId);
+            _communicationDB.IncreaseMessagesUnread(userCommunication!.Id, message.receiverId);
 
-            string? otherUserConn = _sharedDB.GetUserConn(message.receiverId);
+            UserCommunicationDTR dtr = UserCommunicationDTR.ToDTR(userCommunication);
 
-            if (otherUserConn == null)
+            if (chatCreated)
             {
-                return;
+                await Clients.Client(Context.ConnectionId).NewChatCreated(dtr!);
+                if (otherUserConn != null)
+                {
+                    await Clients.Client(otherUserConn!).NewChatCreated(dtr!);
+                }
+                    
             }
-            await Clients.Client(otherUserConn!).UserOnline(myId.ToString());
+            if (otherUserConn != null) {
+                await Clients.Client(otherUserConn!).ReceiveMessage(message);
+            }
+            
+            
         }
     }
 }

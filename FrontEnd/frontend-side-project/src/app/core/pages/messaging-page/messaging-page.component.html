@@ -35,31 +35,31 @@
     <div class="col-lg-6">
       <div class="card">
         <div class="card-header">
-          Trenutni čet - worker1 worker1
-          <!-- @if (signalR.currentChat()) {
-            -
-            <u>{{
-              signalR.currentChat()?.user?.name +
-                " " +
-                signalR.currentChat()?.user?.lastName
-            }}</u>
-          } -->
+          Trenutni čet -
+          @if (currentChatIndex != -1) {
+            <u>{{ currentChatUser?.name + " " + currentChatUser?.lastname }}</u>
+          }
         </div>
         <div class="card-body messages" id="current-chat-messages">
           <!-- Messages of the currently clicked chat -->
-          @for (message of messages; track message) {
-            @if (
-              message.senderId === +globalUserStateService.currentUser()?.id!
+          @if (currentChatIndex != -1) {
+            @for (
+              message of userChats[currentChatIndex].communicationMessages;
+              track message
             ) {
-              <div class="card message align-self-end flex-grow-0">
-                <span>{{ message.message }}</span>
-                <!-- <span className="message-footer">30.03.2024</span> -->
-              </div>
-            } @else {
-              <div class="card message self align-self-start flex-grow-0">
-                <span>{{ message.message }}</span>
-                <!-- <span className="message-footer">30.03.2024</span> -->
-              </div>
+              @if (
+                message.senderId === +globalUserStateService.currentUser()?.id!
+              ) {
+                <div class="card message align-self-end flex-grow-0">
+                  <span>{{ message.message }}</span>
+                  <!-- <span className="message-footer">30.03.2024</span> -->
+                </div>
+              } @else {
+                <div class="card message self align-self-start flex-grow-0">
+                  <span>{{ message.message }}</span>
+                  <!-- <span className="message-footer">30.03.2024</span> -->
+                </div>
+              }
             }
           }
         </div>
@@ -75,6 +75,7 @@
               <button
                 class="btn btn-primary"
                 type="button"
+                [disabled]="currentChatUser == null"
                 (click)="sendMessage()"
               >
                 Pošalji
