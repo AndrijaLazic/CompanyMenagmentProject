@@ -88,13 +88,16 @@ namespace BLL.Socket
                 {
                     await Clients.Client(otherUserConn!).NewChatCreated(dtr!);
                 }
-                    
+                return;        
             }
+
+            CommunicationMessageDTR communicationMessageDTR = dtr.communicationMessages.Last();
+
             if (otherUserConn != null) {
-                await Clients.Client(otherUserConn!).ReceiveMessage(message);
+                await Clients.Client(otherUserConn!).ReceiveMessage(communicationMessageDTR);
             }
-            
-            
+            await Clients.Client(Context.ConnectionId).ReceiveMessage(communicationMessageDTR);
+
         }
     }
 }

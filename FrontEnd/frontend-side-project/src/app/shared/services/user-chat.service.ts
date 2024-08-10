@@ -55,7 +55,7 @@ export class UserChatService {
 
   getMessages(chatId: number) {
     return this._httpClient.get(
-      environment.BASE_URL + 'Chat/GetMyChats/' + chatId,
+      environment.BASE_URL + 'Chat/GetMessages/' + chatId,
     );
   }
 }

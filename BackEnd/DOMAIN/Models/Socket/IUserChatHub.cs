@@ -11,7 +11,7 @@ namespace DOMAIN.Models.Socket
 {
     public interface IUserChatHub
     {
-        public Task ReceiveMessage(ChatMessageDTO message);
+        public Task ReceiveMessage(CommunicationMessageDTR message);
         public Task UserOnline(string message);
         public Task UserOffline(string message);
         public Task DisconnectedFromAppMessage(string message);

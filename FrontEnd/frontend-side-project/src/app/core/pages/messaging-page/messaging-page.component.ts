@@ -6,7 +6,10 @@ import { GlobalUserStateService } from '../../../shared/services/global-user-sta
 import { UserChatService } from '../../../shared/services/user-chat.service';
 import { Observable, Subscription } from 'rxjs';
 import { MessageDTS } from '../../../shared/models/DTS/MessageDTS';
-import { UserCommunication } from '../../../shared/models/UserCommunication';
+import {
+  MessageDTR,
+  UserCommunication,
+} from '../../../shared/models/UserCommunication';
 import { User } from '../../../shared/models/User';
 import { UserShort } from '../../../shared/models/DTO/GlobalSettingsDTO';
 
@@ -87,6 +90,26 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
         user2Unread: 0,
       });
       this.currentChatIndex = 0;
+    } else {
+      this.userChatService
+        .getMessages(this.userChats[this.currentChatIndex].id)
+        .subscribe({
+          next: (value: any) => {
+            const messages: MessageDTR[] = value.data as MessageDTR[];
+            if (messages.length > 0) {
+              const communication: UserCommunication | undefined =
+                this.userChats.find(
+                  (x) => (x.id = messages[0].communicationId),
+                );
+              if (communication) {
+                communication.communicationMessages = messages;
+              }
+            }
+          },
+          error(err) {
+            console.error(err);
+          },
+        });
     }
 
     if (
@@ -133,8 +156,14 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
     this.UserReceiveMessageObservableSubscription = this.userChatService
       .receiveMessage('ReceiveMessage')
       .subscribe({
-        next: (value: string) => {
-          console.log(value);
+        next: (value: any) => {
+          const message: MessageDTR = value as MessageDTR;
+          console.log(message);
+          const communication: UserCommunication | undefined =
+            this.userChats.find((x) => (x.id = message.communicationId));
+          if (communication) {
+            communication.communicationMessages.push(message);
+          }
         },
         error: (err) => {
           console.log(err);

@@ -27,9 +27,9 @@ namespace BackendAPI.Controllers
         }
 
         [HttpGet("GetMessages/{id}")]
-        public async Task<ActionResult<CommunicationMessage[]>> GetMessages(int id)
+        public async Task<ActionResult<CommunicationMessageDTR[]>> GetMessages(int id)
         {
-            ServiceResponse<CommunicationMessage[]> serviceResponse = new ServiceResponse<CommunicationMessage[]>();
+            ServiceResponse<CommunicationMessageDTR[]> serviceResponse = new ServiceResponse<CommunicationMessageDTR[]>();
             var accessToken = Request.Headers[HeaderNames.Authorization];
             string tokenValue = accessToken[0]!.Split(" ")[1];
 
@@ -38,9 +38,9 @@ namespace BackendAPI.Controllers
         }
 
         [HttpGet("GetMyChats")]
-        public async Task<ActionResult<UserCommunication[]>> GetMyChats(int id)
+        public async Task<ActionResult<UserCommunicationDTR[]>> GetMyChats(int id)
         {
-            ServiceResponse<UserCommunication[]> serviceResponse = new ServiceResponse<UserCommunication[]>();
+            ServiceResponse<UserCommunicationDTR[]> serviceResponse = new ServiceResponse<UserCommunicationDTR[]>();
             var accessToken = Request.Headers[HeaderNames.Authorization];
             string tokenValue = accessToken[0]!.Split(" ")[1];
 

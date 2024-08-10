@@ -25,7 +25,7 @@ namespace BLL.Services
             _communicationDB = communicationDB;
         }
 
-        public CommunicationMessage[] GetMessagesFromCommunication(int communicationID, string tokenValue)
+        public CommunicationMessageDTR[] GetMessagesFromCommunication(int communicationID, string tokenValue)
         {
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(tokenValue);
             int userId = int.Parse(jwt.Claims.First(x => x.Type == "id").Value);
@@ -43,7 +43,7 @@ namespace BLL.Services
             return _communicationDB.GetAllMessages(communicationID);
         }
 
-        public UserCommunication[] GetUserCommunications(string token)
+        public UserCommunicationDTR[] GetUserCommunications(string token)
         {
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
             int userId = int.Parse(jwt.Claims.First(x => x.Type == "id").Value);

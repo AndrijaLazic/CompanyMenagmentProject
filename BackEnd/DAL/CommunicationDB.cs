@@ -1,5 +1,6 @@
 ﻿using DOMAIN.Models.Database;
 using DOMAIN.Models.DTO;
+using DOMAIN.Models.DTR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +35,15 @@ namespace DAL
             _databaseContext.SaveChanges();
         }
 
-        public CommunicationMessage[] GetAllMessages(int communicationId)
+        public CommunicationMessageDTR[] GetAllMessages(int communicationId)
         {
-            return _databaseContext.CommunicationMessages.Where(x=> x.CommunicationId == communicationId).ToArray();
+            CommunicationMessage[] communicationMessages = _databaseContext.CommunicationMessages.Where(x => x.CommunicationId == communicationId).ToArray();
+            CommunicationMessageDTR[] array = new CommunicationMessageDTR[communicationMessages.Length];
+            for (int i = 0; i < communicationMessages.Length; i++)
+            {
+                array[i] = CommunicationMessageDTR.ToDTR(communicationMessages[i]);
+            }
+            return array;
         }
 
         public UserCommunication? GetCommunication(int communicationId)
@@ -56,9 +63,16 @@ namespace DAL
             return _databaseContext.UserCommunications.Where(x => x.User1 == user1Id && x.User2 == user2Id).FirstOrDefault();
         }
 
-        public UserCommunication[] GetUserCommunications(int userId)
+        public UserCommunicationDTR[] GetUserCommunications(int userId)
         {
-            return _databaseContext.UserCommunications.Where(x=> x.User1 == userId ||  x.User2 == userId).ToArray();
+
+            UserCommunication[] userCommunications = _databaseContext.UserCommunications.Where(x => x.User1 == userId || x.User2 == userId).ToArray();
+            UserCommunicationDTR[] array = new UserCommunicationDTR[userCommunications.Length];
+            for (int i = 0; i < userCommunications.Length; i++)
+            {
+                array[i] = UserCommunicationDTR.ToDTR(userCommunications[i]);
+            }
+            return array;
         }
 
         public void AddMessage(ChatMessageDTO messageDTO,int communicationID,int senderID)
