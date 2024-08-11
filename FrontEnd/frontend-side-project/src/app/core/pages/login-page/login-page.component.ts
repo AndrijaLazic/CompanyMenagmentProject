@@ -60,7 +60,9 @@ export class LoginPageComponent {
       this._authService.login(this.loginForm.value).subscribe({
         next: (resData: any) => {
           this._globalUserState.loginUser(resData.data);
-          this.router.navigate(['/']);
+          this.router.navigate(['/']).then(() => {
+            window.location.reload();
+          });
         },
         error: (err) => {
           console.log(err);

@@ -44,6 +44,7 @@ app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
+app.MapHub<NotificationsHub>("/notifications");
 app.MapHub<UserChatHub>("/user-chat");
 
 app.Run();

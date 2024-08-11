@@ -25,8 +25,6 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
   globalSettingsService = inject(GlobalSettingsService);
   globalUserStateService = inject(GlobalUserStateService);
   userChatService: UserChatService;
-  private UserOnlineMessageObservableSubscription: Subscription | undefined;
-  private UserOfflineMessageObservableSubscription: Subscription | undefined;
   private UserReceiveMessageObservableSubscription: Subscription | undefined;
   private NewChatCreatedSubscription: Subscription | undefined;
   userChats: UserCommunication[] = [];
@@ -52,8 +50,6 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.UserOnlineMessageObservableSubscription?.unsubscribe();
-    this.UserOfflineMessageObservableSubscription?.unsubscribe();
     this.UserReceiveMessageObservableSubscription?.unsubscribe();
     this.NewChatCreatedSubscription?.unsubscribe();
   }
@@ -131,28 +127,6 @@ export class MessagingPageComponent implements OnInit, OnDestroy {
   }
 
   private setSocketObservables() {
-    this.UserOnlineMessageObservableSubscription = this.userChatService
-      .receiveMessage('UserOnline')
-      .subscribe({
-        next: (value: string) => {
-          console.log(value);
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-
-    this.UserOfflineMessageObservableSubscription = this.userChatService
-      .receiveMessage('UserOffline')
-      .subscribe({
-        next: (value: string) => {
-          console.log(value);
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-
     this.UserReceiveMessageObservableSubscription = this.userChatService
       .receiveMessage('ReceiveMessage')
       .subscribe({

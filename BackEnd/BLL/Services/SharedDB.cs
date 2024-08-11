@@ -10,20 +10,32 @@ namespace BLL.Services
 {
     public class SharedDB
     {
-        private ConcurrentDictionary<int, string> _onlineWorkers = new ConcurrentDictionary<int, string>();
-        public void setWorkerOnline(int workerId, string connection)
+        private ConcurrentDictionary<int, UserConnection> _onlineWorkers = new ConcurrentDictionary<int, UserConnection>();
+        public void setWorkerOnline(int workerId, UserConnection connection)
         {
             _onlineWorkers.TryAdd(workerId, connection);
         }
 
-        public void SetWorkerOffline(int workerId)
+        public void SetWorkerChatOnline(int workerId, string connection)
         {
-            _onlineWorkers.TryRemove(workerId, out _);
+            _onlineWorkers.TryGetValue(workerId, out UserConnection? conn);
+            conn!.chatConnection = connection;
         }
 
-        public string? GetUserConn(int workerId)
+        public void SetWorkerChatOffline(int workerId)
         {
-            _onlineWorkers.TryGetValue(workerId, out string? conn);
+            _onlineWorkers.TryGetValue(workerId, out UserConnection? conn);
+            conn!.chatConnection = null;
+        }
+
+        public void SetWorkerOffline(int workerId)
+        {
+            _onlineWorkers.TryRemove(workerId, out UserConnection? conn);
+        }
+
+        public UserConnection? GetUserConn(int workerId)
+        {
+            _onlineWorkers.TryGetValue(workerId, out UserConnection? conn);
             return conn;
         }
     }

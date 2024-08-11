@@ -8,9 +8,9 @@ namespace DOMAIN.Models.Socket
 {
     public class UserConnection
     {
-        public string Name { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public int Id { get; set; }
+        public string? chatConnection { get; set; }
+        public string? notificationConnection { get; set; }
+        public SocketEventAggregator eventAggregator { get; set; } = new SocketEventAggregator();
 
     }
 }

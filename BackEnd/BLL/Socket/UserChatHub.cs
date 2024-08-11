@@ -39,7 +39,7 @@ namespace BLL.Socket
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            _sharedDB.SetWorkerOffline(int.Parse(Context.Items["UserId"]?.ToString()!));
+            _sharedDB.SetWorkerChatOffline(int.Parse(Context.Items["UserId"]?.ToString()!));
             await Clients.All.UserOffline(Context.Items["UserId"]?.ToString()!);
         }
 
@@ -56,8 +56,8 @@ namespace BLL.Socket
             Context.Items["JWTtoken"] = JWT;
             Context.Items["UserId"] = userId;
 
-            _sharedDB.setWorkerOnline(int.Parse(userId), Context.ConnectionId);
-            await Clients.All.UserOnline(userId);
+            _sharedDB.SetWorkerChatOnline(int.Parse(userId), Context.ConnectionId);
+   
         }
         public async Task SendMessage(ChatMessageDTO message)
         {
@@ -66,7 +66,7 @@ namespace BLL.Socket
                 throw new UserNotFound("JWTNotValid");
             }
             int myId = int.Parse(Context.Items["UserId"]!.ToString()!);
-            string? otherUserConn = _sharedDB.GetUserConn(message.receiverId);
+            UserConnection? otherUserConn = _sharedDB.GetUserConn(message.receiverId);
             bool chatCreated = false;
             //if exists in sql database
             UserCommunication? userCommunication = _communicationDB.GetCommunication(myId, message.receiverId);
@@ -84,17 +84,36 @@ namespace BLL.Socket
             if (chatCreated)
             {
                 await Clients.Client(Context.ConnectionId).NewChatCreated(dtr!);
-                if (otherUserConn != null)
+                if (otherUserConn?.chatConnection != null)
                 {
-                    await Clients.Client(otherUserConn!).NewChatCreated(dtr!);
+                    await Clients.Client(otherUserConn.chatConnection!).NewChatCreated(dtr!);
+                }
+                else if(otherUserConn?.notificationConnection != null)
+                {
+                    otherUserConn.eventAggregator.Publish(new Notification()
+                    {
+                        Data = myId,
+                        type = DOMAIN.Enums.NotificationType.NewMessage,
+                        receiverConnection = otherUserConn?.notificationConnection
+                    });
+                    
                 }
                 return;        
             }
 
             CommunicationMessageDTR communicationMessageDTR = dtr.communicationMessages.Last();
 
-            if (otherUserConn != null) {
-                await Clients.Client(otherUserConn!).ReceiveMessage(communicationMessageDTR);
+            if (otherUserConn?.chatConnection != null) {
+                await Clients.Client(otherUserConn.chatConnection!).ReceiveMessage(communicationMessageDTR);
+            }
+            else if (otherUserConn?.notificationConnection != null)
+            {
+                otherUserConn?.eventAggregator.Publish(new Notification()
+                {
+                    Data = myId,
+                    type = DOMAIN.Enums.NotificationType.NewMessage,
+                    receiverConnection = otherUserConn?.notificationConnection
+                });
             }
             await Clients.Client(Context.ConnectionId).ReceiveMessage(communicationMessageDTR);
 
